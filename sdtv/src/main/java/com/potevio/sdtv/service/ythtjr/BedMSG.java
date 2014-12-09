@@ -1,4 +1,4 @@
-package com.potevio.sdtv.service;
+package com.potevio.sdtv.service.ythtjr;
 
 public class BedMSG {
 	private String deviceid;
