@@ -5,8 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.potevio.sdtv.device.ythtjr.BedService;
 import com.potevio.sdtv.domain.Bed;
-import com.potevio.sdtv.service.ythtjr.BedService;
 
 @Controller
 @RequestMapping(value = "bed")

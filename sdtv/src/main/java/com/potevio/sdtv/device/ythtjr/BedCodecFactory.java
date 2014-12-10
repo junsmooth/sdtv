@@ -1,4 +1,4 @@
-package com.potevio.sdtv.service.ythtjr;
+package com.potevio.sdtv.device.ythtjr;
 
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
