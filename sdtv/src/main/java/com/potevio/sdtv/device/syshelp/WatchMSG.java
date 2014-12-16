@@ -1,10 +1,12 @@
 package com.potevio.sdtv.device.syshelp;
 
 public class WatchMSG {
+	public static final String DATATYPE_PUSE="pulse";
+	public static final String DATATYPE_GPS="GPS_AT";
 	private String mobile;
 	private String datatype;
 	private String pulsecount;
-	private String longitude;
+	private String longitude="0.000000";
 	private String timen;
 	public String getTimen() {
 		return timen;
@@ -20,7 +22,7 @@ public class WatchMSG {
 				+ LBS + ", height=" + height + ", speed=" + speed
 				+ ", direction=" + direction + "]";
 	}
-	private String latitude;
+	private String latitude="90.000000";
 	private String LBS;
 	private String height;
 	private String speed;

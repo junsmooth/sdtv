@@ -18,7 +18,7 @@ public class S8Controller {
 	private static Logger logger = LoggerFactory.getLogger(S8Controller.class);
 
 	@RequestMapping
-	public void s8Data(@ModelAttribute WatchMSG msg, HttpServletRequest req,
+	public void s8Data( HttpServletRequest req,
 			HttpServletResponse rep) {
 		
 		String query = req.getQueryString();
@@ -26,11 +26,11 @@ public class S8Controller {
 		if (!query.contains("mobile") || !query.contains("datatype")) {
 			return;
 		}
-		try {
-			CacheUtil.getSyshelpWatchQueue().put(msg);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			CacheUtil.getSyshelpWatchQueue().put(msg);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 }

@@ -1,8 +1,12 @@
 package com.potevio.sdtv.device.syshelp;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,12 +20,21 @@ import com.potevio.sdtv.util.CacheUtil;
 @Controller
 @RequestMapping(value = "watch")
 public class WatchController {
+	private static Logger logger = LoggerFactory.getLogger(WatchController.class);
+	
 	@Autowired
 	private WatchService watchService;
 
 	@RequestMapping("latest")
 	public @ResponseBody Object latestData() {
 		Watch watch = watchService.latestData();
+		WatchMSG msg=CacheUtil.getWatchLatest();
+		if(msg!=null){
+			watch=new Watch();
+			watch.setCreateDate(new Date());
+			watch.setHeartbeat(msg.getPulsecount());
+		}
+		
 		System.out.println(watch);
 		if (watch != null) {
 			return watch;
@@ -36,11 +49,10 @@ public class WatchController {
 		if (!query.contains("mobile") || !query.contains("datatype")) {
 			return;
 		}
-
+		logger.info("WATCH RAW:"+query);
 		try {
+			CacheUtil.setWatchLatest(msg);
 			CacheUtil.getSyshelpWatchQueue().put(msg);
-			System.out.println(query);
-			System.out.println(msg);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
