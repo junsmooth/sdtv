@@ -17,24 +17,26 @@ import com.potevio.sdtv.domain.Watch;
 import com.potevio.sdtv.service.WatchService;
 import com.potevio.sdtv.util.CacheUtil;
 
+//遗留接口，对应之前的机顶盒程序
 @Controller
 @RequestMapping(value = "watch")
 public class WatchController {
-	private static Logger logger = LoggerFactory.getLogger(WatchController.class);
-	
+	private static Logger logger = LoggerFactory
+			.getLogger(WatchController.class);
+
 	@Autowired
 	private WatchService watchService;
 
 	@RequestMapping("latest")
 	public @ResponseBody Object latestData() {
 		Watch watch = watchService.latestData();
-		WatchMSG msg=CacheUtil.getWatchLatest();
-		if(msg!=null){
-			watch=new Watch();
+		WatchMSG msg = CacheUtil.getWatchLatest();
+		if (msg != null) {
+			watch = new Watch();
 			watch.setCreateDate(new Date());
 			watch.setHeartbeat(msg.getPulsecount());
 		}
-		
+
 		System.out.println(watch);
 		if (watch != null) {
 			return watch;
@@ -49,7 +51,7 @@ public class WatchController {
 		if (!query.contains("mobile") || !query.contains("datatype")) {
 			return;
 		}
-		logger.info("WATCH RAW:"+query);
+		logger.info("WATCH RAW:" + query);
 		try {
 			CacheUtil.setWatchLatest(msg);
 			CacheUtil.getSyshelpWatchQueue().put(msg);
