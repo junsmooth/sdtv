@@ -1,6 +1,7 @@
 package com.potevio.sdtv.service;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -14,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.potevio.sdtv.device.hiyo.HiyoClient;
+import com.potevio.sdtv.device.hiyo.HiyoMSG;
 import com.potevio.sdtv.device.syshelp.WatchMSG;
 import com.potevio.sdtv.device.syshelp.S8.SysHelpWatchServer;
 import com.potevio.sdtv.device.ythtjr.BedMSG;
@@ -48,6 +52,68 @@ public class SendDataTimer {
 		startSendSyshelpWATCH();
 
 		startSendMockWatchData();
+
+		startHiyoClient();
+
+		startSendHiyoBed();
+	}
+
+	private void startSendHiyoBed() {
+		Executors.newSingleThreadExecutor().execute(new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					HiyoMSG msg;
+					try {
+						msg = CacheUtil.getHiyoQueue().take();
+
+						// cast hiyo to bed
+						String json = msg.getMsg();
+						
+						logger.info("IN HIYO:" + json);
+						
+						Map<String, Object> jsonMap = (Map<String, Object>) JSON
+								.parse(json);
+						Integer z = (Integer) jsonMap.get("z");
+
+						
+						if (1==z) {
+
+							String alt =  jsonMap.get("alt").toString();
+							BedMSG bedMsg=new BedMSG();
+							bedMsg.setDeviceid(jsonMap.get("dev").toString());
+							
+							if("6".equals(alt)||"7".equals(alt)){
+								//离床
+								bedMsg.setHeartrating("0");
+								bedMsg.setResping("0");
+								bedMsg.setStatus("50");
+							}
+							if("2".equals(alt)||"1".equals(alt)){
+								//体动 
+								bedMsg.setHeartrating(jsonMap.get("hit").toString());
+								bedMsg.setResping(jsonMap.get("bre").toString());
+								bedMsg.setStatus("41");
+							}
+							if("3".equals(alt)||"4".equals(alt)){
+								bedMsg.setHeartrating(jsonMap.get("hit").toString());
+								bedMsg.setResping(jsonMap.get("bre").toString());
+								bedMsg.setStatus("20");
+							}
+							sendBedMsg(bedMsg);
+						}
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+		});
+	}
+
+	private void startHiyoClient() {
+		Executors.newSingleThreadExecutor().execute(new HiyoClient());
 	}
 
 	private void startSendMockWatchData() {

@@ -18,8 +18,15 @@ public class BedMsgHandler extends IoHandlerAdapter {
 		logger.info("BED RAW:" + msg);
 		if (msg.getDeviceid().equals("Z20023")) {
 			CacheUtil.setBedlatest(msg);
+		}else{
+			CacheUtil.setBedlatest(msg);
 		}
 		CacheUtil.getYthtjrbedQueue().put(msg);
 	}
 
+	@Override
+	public void exceptionCaught(IoSession session, Throwable cause)
+			throws Exception {
+		super.exceptionCaught(session, cause);
+	}
 }

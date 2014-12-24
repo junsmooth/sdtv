@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.potevio.sdtv.dao.BedDao;
 import com.potevio.sdtv.domain.Bed;
-
+//遗留API，供机顶盒查询床垫最新数据
 @Service
 public class BedService {
 	@Autowired

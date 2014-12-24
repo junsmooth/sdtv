@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.potevio.sdtv.device.syshelp.S8Controller;
 import com.potevio.sdtv.device.ythtjr.BedMSG;
 import com.potevio.sdtv.device.ythtjr.BedService;
 import com.potevio.sdtv.domain.Bed;
