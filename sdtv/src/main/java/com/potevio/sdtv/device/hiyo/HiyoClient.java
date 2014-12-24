@@ -46,11 +46,11 @@ public class HiyoClient implements Runnable {
 			@Override
 			public void run() {
 				if(cf==null){
-					logger.info("connect.");
+					logger.info("Connect to hiyo server.");
 					cf=connect();
 				}else{
 					if(!cf.isConnected()){
-						logger.info("isConnected:"+cf.isConnected());
+						logger.error("RE CONNECT HIYOServer.");
 						cf.cancel();
 						cf=connect();
 					}
