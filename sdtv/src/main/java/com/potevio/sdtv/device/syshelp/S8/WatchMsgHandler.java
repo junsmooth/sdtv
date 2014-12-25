@@ -31,6 +31,7 @@ public class WatchMsgHandler extends IoHandlerAdapter {
 			watch.setDatatype(WatchMSG.DATATYPE_PUSE);
 			String pulse = arr[10];
 			watch.setPulsecount(pulse);
+			CacheUtil.setWatchLatest(watch);
 		}
 		if (str.contains("LBS")) {
 			watch.setDatatype(WatchMSG.DATATYPE_GPS);
@@ -48,6 +49,7 @@ public class WatchMsgHandler extends IoHandlerAdapter {
 		}
 
 		watch.setTimen(arr[arr.length - 1]);
+		
 		CacheUtil.getSyshelpWatchQueue().put(watch);
 
 	}

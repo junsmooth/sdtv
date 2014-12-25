@@ -35,9 +35,10 @@ public class WatchController {
 			watch = new Watch();
 			watch.setCreateDate(new Date());
 			watch.setHeartbeat(msg.getPulsecount());
+			System.out.println(watch);
 		}
 
-		System.out.println(watch);
+		
 		if (watch != null) {
 			return watch;
 		}
@@ -53,7 +54,7 @@ public class WatchController {
 		}
 		logger.info("WATCH RAW:" + query);
 		try {
-			CacheUtil.setWatchLatest(msg);
+//			CacheUtil.setWatchLatest(msg);
 			CacheUtil.getSyshelpWatchQueue().put(msg);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
