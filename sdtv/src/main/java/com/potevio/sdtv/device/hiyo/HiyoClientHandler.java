@@ -84,7 +84,7 @@ public class HiyoClientHandler implements IoHandler {
 	@Override
 	public void messageReceived(IoSession session, Object message)
 			throws Exception {
-		logger.debug("RECV MSG:" + message);
+		logger.info("RECV MSG:" + message);
 		HiyoMSG msg = (HiyoMSG) message;
 		
 		byte[] cmdByts=msg.getCmd();

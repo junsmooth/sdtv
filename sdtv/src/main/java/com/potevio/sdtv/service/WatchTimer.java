@@ -12,7 +12,7 @@ import com.potevio.sdtv.device.syshelp.WatchMSG;
 import com.potevio.sdtv.domain.PlatformProperties;
 import com.potevio.sdtv.util.CacheUtil;
 
-@Service
+//@Service
 public class WatchTimer {
 	@Autowired
 	private PlatformProperties prop;

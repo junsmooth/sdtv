@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.session.IdleStatus;
+import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.slf4j.Logger;
@@ -42,18 +43,25 @@ public class HiyoClient {
 				new Runnable() {
 					@Override
 					public void run() {
-						if (cf == null) {
-							logger.info("Connect to hiyo server.");
-							cf = connect();
-						} else {
-							if (!cf.isConnected()) {
-								logger.error("RE CONNECT HIYOServer.");
-								cf.cancel();
+						logger.info("check hiyo client.");
+						try {
+							if (cf == null) {
 								cf = connect();
+							} else {
+								System.out.println(cf.isConnected());
+								if(cf.isConnected()){
+									System.out.println("---"+cf.getSession().isConnected());
+								}
+								if(!cf.isConnected()||!cf.getSession().isConnected()){
+									cf.cancel();
+									cf=connect();
+								}
 							}
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
 					}
-				}, 1, 30, TimeUnit.SECONDS);
+				}, 1, 10, TimeUnit.SECONDS);
 	}
 
 	private void initConnector() {
