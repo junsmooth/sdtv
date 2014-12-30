@@ -25,7 +25,7 @@ import com.potevio.sdtv.device.ythtjr.BedServer;
 import com.potevio.sdtv.domain.PlatformProperties;
 import com.potevio.sdtv.util.CacheUtil;
 
-@Service
+//@Service
 public class SendDataTimer {
 	private static Logger logger = LoggerFactory.getLogger(SendDataTimer.class);
 	/**
@@ -35,27 +35,27 @@ public class SendDataTimer {
 	@Autowired
 	private PlatformProperties prop;
 
-	static {
-		// start ythtjr bed server
-		BedServer server = new BedServer();
-		server.start();
-	}
-	static {
-		SysHelpWatchServer watchServer = new SysHelpWatchServer();
-		watchServer.start();
-	}
+	// static {
+	// // start ythtjr bed server
+	// BedServer server = new BedServer();
+	// server.start();
+	// }
+	// static {
+	// SysHelpWatchServer watchServer = new SysHelpWatchServer();
+	// watchServer.start();
+	// }
 
 	@Scheduled(fixedDelay = Long.MAX_VALUE)
 	private void sendDataToPlatform() throws Exception {
-		startSendYTHTJR_BED();
+		// startSendYTHTJR_BED();
 
 		startSendSyshelpWATCH();
 
 		startSendMockWatchData();
 
-		startHiyoClient();
+		// startHiyoClient();
 
-		startSendHiyoBed();
+		// startSendHiyoBed();
 	}
 
 	private void startSendHiyoBed() {
@@ -69,34 +69,35 @@ public class SendDataTimer {
 
 						// cast hiyo to bed
 						String json = msg.getMsg();
-						
+
 						logger.info("IN HIYO:" + json);
-						
+
 						Map<String, Object> jsonMap = (Map<String, Object>) JSON
 								.parse(json);
 						Integer z = (Integer) jsonMap.get("z");
 
-						
-						if (1==z) {
+						if (1 == z) {
 
-							String alt =  jsonMap.get("alt").toString();
-							BedMSG bedMsg=new BedMSG();
+							String alt = jsonMap.get("alt").toString();
+							BedMSG bedMsg = new BedMSG();
 							bedMsg.setDeviceid(jsonMap.get("dev").toString());
-							
-							if("6".equals(alt)||"7".equals(alt)){
-								//离床
+
+							if ("6".equals(alt) || "7".equals(alt)) {
+								// 离床
 								bedMsg.setHeartrating("0");
 								bedMsg.setResping("0");
 								bedMsg.setStatus("50");
 							}
-							if("2".equals(alt)||"1".equals(alt)){
-								//体动 
-								bedMsg.setHeartrating(jsonMap.get("hit").toString());
+							if ("2".equals(alt) || "1".equals(alt)) {
+								// 体动
+								bedMsg.setHeartrating(jsonMap.get("hit")
+										.toString());
 								bedMsg.setResping(jsonMap.get("bre").toString());
 								bedMsg.setStatus("41");
 							}
-							if("3".equals(alt)||"4".equals(alt)){
-								bedMsg.setHeartrating(jsonMap.get("hit").toString());
+							if ("3".equals(alt) || "4".equals(alt)) {
+								bedMsg.setHeartrating(jsonMap.get("hit")
+										.toString());
 								bedMsg.setResping(jsonMap.get("bre").toString());
 								bedMsg.setStatus("20");
 							}
@@ -112,9 +113,9 @@ public class SendDataTimer {
 		});
 	}
 
-	private void startHiyoClient() {
-		Executors.newSingleThreadExecutor().execute(new HiyoClient());
-	}
+	// private void startHiyoClient() {
+	// Executors.newSingleThreadExecutor().execute(new HiyoClient());
+	// }
 
 	private void startSendMockWatchData() {
 		Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(

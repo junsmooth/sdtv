@@ -5,17 +5,22 @@ import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.concurrent.Executors;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
 import org.apache.mina.filter.executor.ExecutorFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SysHelpWatchServer {
 
 	private static int PORT = 8099;
 
+	@PostConstruct
 	public void start() {
 
 		IoAcceptor acceptor = new NioSocketAcceptor();
