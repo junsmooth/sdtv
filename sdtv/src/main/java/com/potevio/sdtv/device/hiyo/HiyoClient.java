@@ -61,7 +61,7 @@ public class HiyoClient {
 							e.printStackTrace();
 						}
 					}
-				}, 1, 10, TimeUnit.SECONDS);
+				}, 1, 30, TimeUnit.SECONDS);
 	}
 
 	private void initConnector() {
