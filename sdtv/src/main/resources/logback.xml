@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <configuration>
-	<substitutionProperty name="log.base" value="d:\\logback\\logback" />
+	<substitutionProperty name="log.base" value="sdtvlog" />
 	<jmxConfigurator />
 	
 	<appender name="logfile"

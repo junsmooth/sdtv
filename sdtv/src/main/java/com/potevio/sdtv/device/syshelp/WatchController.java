@@ -29,7 +29,8 @@ public class WatchController {
 
 	@RequestMapping("latest")
 	public @ResponseBody Object latestData() {
-		Watch watch = watchService.latestData();
+//		Watch watch = watchService.latestData();
+		Watch watch=null;
 		WatchMSG msg = CacheUtil.getWatchLatest();
 		if (msg != null) {
 			watch = new Watch();

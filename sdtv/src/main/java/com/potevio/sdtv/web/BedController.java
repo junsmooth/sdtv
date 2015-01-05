@@ -21,7 +21,7 @@ public class BedController {
 
 	@RequestMapping("latest")
 	public @ResponseBody Object latestBedData() {
-		Bed bed = bedService.latestBedData();
+//		Bed bed = bedService.latestBedData();
 		
 		BedMSG msg = CacheUtil.getBedlatest();
 		if(msg==null){
