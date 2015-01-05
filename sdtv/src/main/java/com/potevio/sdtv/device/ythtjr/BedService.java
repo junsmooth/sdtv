@@ -10,14 +10,14 @@ import com.potevio.sdtv.domain.Bed;
 //遗留API，供机顶盒查询床垫最新数据
 @Service
 public class BedService {
-	@Autowired
-	private BedDao bedDao;
+//	@Autowired
+//	private BedDao bedDao;
 
 	public Bed latestBedData() {
-		List<Bed> bedList = (List<Bed>) bedDao.findAll();
-		if (bedList.size() > 0) {
-			return bedList.get(0);
-		}
+//		List<Bed> bedList = (List<Bed>) bedDao.findAll();
+//		if (bedList.size() > 0) {
+//			return bedList.get(0);
+//		}
 		return null;
 	}
 }
