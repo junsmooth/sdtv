@@ -42,8 +42,10 @@ public class HiyoClient {
 				new Runnable() {
 					@Override
 					public void run() {
+
 						try {
 							if (cf == null) {
+								logger.info("CHECK HIYO SESSION. cf="+cf);
 								cf = connect();
 							} else {
 								if (!cf.isConnected()
@@ -53,11 +55,16 @@ public class HiyoClient {
 									cf = connect();
 								}
 							}
+							logger.info("CHECK HIYO SESSION. cf=" + cf
+									+ ",cf.isConnected=" + cf.isConnected()
+									+ ",cf.getSession=" + cf.getSession()
+									+ ",cf.getsession.isconnected="
+									+ cf.getSession().isConnected());
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
-				}, 1, 30, TimeUnit.SECONDS);
+				}, 1, 60, TimeUnit.SECONDS);
 	}
 
 	private void initConnector() {
@@ -65,9 +72,12 @@ public class HiyoClient {
 		ProtocolCodecFilter filter = new ProtocolCodecFilter(
 				new HiyoCodecFactory());
 		chain.addLast("hiyofilter", filter);
+	
 		connector.setHandler(new HiyoClientHandler());
 		connector.setConnectTimeoutCheckInterval(30);
-		connector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
+		connector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 30);
+		connector.getSessionConfig().setKeepAlive(true);
+		connector.getSessionConfig().setWriteTimeout(10);
 	}
 
 }

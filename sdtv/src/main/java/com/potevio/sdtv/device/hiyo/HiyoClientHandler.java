@@ -3,6 +3,7 @@ package com.potevio.sdtv.device.hiyo;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
@@ -71,6 +72,7 @@ public class HiyoClientHandler implements IoHandler {
 		bodyMap.put("apikey", "e121a422cd24c55005ea81b0ade9d7f9");
 		String json = JSON.toJSONString(bodyMap);
 		msg.setMsg(json);
+		logger.error("HIYO WRITE HEARTBEAT:" + session);
 		session.write(msg);
 	}
 
