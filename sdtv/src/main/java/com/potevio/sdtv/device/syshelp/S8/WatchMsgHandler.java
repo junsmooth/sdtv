@@ -41,17 +41,21 @@ public class WatchMsgHandler extends IoHandlerAdapter {
 			String CELL = arr[12];
 			watch.setLBS("1;" + MCCMNC + "," + LAC + "," + CELL);
 		}
-		if(str.contains("GPS")){
+		if (str.contains("GPS")) {
 			watch.setDatatype(WatchMSG.DATATYPE_GPS);
-			String lat=arr[11];
-			String lon=arr[10];
+			String lat = arr[11];
+			String lon = arr[10];
 			watch.setLongitude(lon);
 			watch.setLatitude(lat);
 		}
 
 		watch.setTimen(arr[arr.length - 1]);
-		
-		CacheUtil.getSyshelpWatchQueue().put(watch);
+
+		if (str.contains("LBS")) {
+			// LBS request syshelp web to get gps
+		} else {
+			CacheUtil.getSyshelpWatchQueue().put(watch);
+		}
 
 	}
 

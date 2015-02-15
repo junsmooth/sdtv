@@ -28,6 +28,7 @@ import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.potevio.sdtv.device.syshelp.WatchMSG;
@@ -128,16 +129,51 @@ public class WatchMessageSender {
 			String lon = StringUtils.substringBetween(arrStrings[0], "'");
 			String lat = StringUtils.substringBetween(arrStrings[1], "'");
 			watch.setMobile(StringUtils.substringBetween(arrStrings[2], "'"));
+
+			// http://api.map.baidu.com/geoconv/v1/?coords=114.21892734521,29.575429778924;114.21892734521,29.575429778924&from=1&to=5&ak=
+			MapXY pointMapXY = new MapXY();
+			pointMapXY.setX(lon);
+			pointMapXY.setY(lat);
+
+			pointMapXY = transferToBDMap(pointMapXY);
 			// jingdu
-			watch.setLongitude(lon);
+			watch.setLongitude(pointMapXY.getX());
 			// weidu
-			watch.setLatitude(lat);
+			watch.setLatitude(pointMapXY.getY());
 			System.out.println(resultString);
 			CacheUtil.getSyshelpWatchQueue().put(watch);
 		} finally {
 			httpclient.close();
 		}
 
+	}
+
+	private MapXY transferToBDMap(MapXY pointMapXY) {
+		// http://api.map.baidu.com/geoconv/v1/?coords=114.21892734521,29.575429778924;114.21892734521,29.575429778924&from=1&to=5&ak=30b8356b2e5d2693e2391f3e39aef2ad
+		String apiHostString = "http://api.map.baidu.com/geoconv/v1/?";
+		String coordsString = pointMapXY.getX() + "," + pointMapXY.getY();
+		String urlString = apiHostString + "coords=" + coordsString
+				+ "&from=3&to=5&ak=30b8356b2e5d2693e2391f3e39aef2ad";
+		try {
+			String resultString = Request.Get(urlString).execute()
+					.returnContent().asString();
+			System.out.println(resultString);
+			String xString=StringUtils.substringBetween(resultString, "x\":", ",");
+			System.out.println(xString);
+			String yString=StringUtils.substringAfterLast(resultString, "y\":");
+			yString=StringUtils.substringBefore(yString, "}");
+			System.out.println(yString);
+			pointMapXY.setX(xString);
+			pointMapXY.setY(yString);
+			
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return pointMapXY;
 	}
 
 	// send watch message to syshelp

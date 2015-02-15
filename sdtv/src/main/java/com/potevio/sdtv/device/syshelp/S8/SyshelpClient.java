@@ -26,7 +26,7 @@ public class SyshelpClient {
 
 	private static NioSocketConnector connector = new NioSocketConnector();
 	private static IoSession session;
-	private static String host = "27.17.44.180";
+	public static String host = "27.17.44.180";
 	private static int port = 8500;
 
 	public static IoSession getSession() {
