@@ -16,6 +16,7 @@ public class WatchMsgHandler extends IoHandlerAdapter {
 	public void messageReceived(IoSession session, Object message)
 			throws Exception {
 		String msg = message.toString();
+		CacheUtil.getSyshelpMessageQueue().add(msg);
 		WatchMSG watch = new WatchMSG();
 		logger.info("IN WATCH:" + msg);
 		String str = msg.replace('[', ' ').replace(']', ' ').trim();
@@ -43,7 +44,7 @@ public class WatchMsgHandler extends IoHandlerAdapter {
 		if(str.contains("GPS")){
 			watch.setDatatype(WatchMSG.DATATYPE_GPS);
 			String lat=arr[11];
-			String lon=arr[12];
+			String lon=arr[10];
 			watch.setLongitude(lon);
 			watch.setLatitude(lat);
 		}
