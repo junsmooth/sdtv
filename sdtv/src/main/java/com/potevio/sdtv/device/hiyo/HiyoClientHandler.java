@@ -2,8 +2,10 @@ package com.potevio.sdtv.device.hiyo;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
@@ -18,6 +20,30 @@ import com.potevio.sdtv.util.SocketUtil;
 public class HiyoClientHandler implements IoHandler {
 	private static final Logger logger = LoggerFactory
 			.getLogger(HiyoClientHandler.class);
+	private static final String KEY_HEARTBEAT_TIME = "heart_beat_time";
+	private static ConcurrentHashMap<Long, IoSession> sessionMap = new ConcurrentHashMap();
+
+	public HiyoClientHandler() {
+		Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(
+				new Runnable() {
+					@Override
+					public void run() {
+						for (Long id : sessionMap.keySet()) {
+							IoSession session = sessionMap.get(id);
+							if (session != null) {
+								Long time = (Long) session.getAttribute(KEY_HEARTBEAT_TIME);
+								Long current = System.currentTimeMillis();
+								if ((current - time) > 5000) {
+									// 超过5秒，未收到返回心跳
+									logger.info("HeartBeat TimeOut,Close Session.");
+									session.close(true);
+									sessionMap.remove(session.getId());
+								}
+							}
+						}
+					}
+				}, 0, 10, TimeUnit.SECONDS);
+	}
 
 	@Override
 	public void sessionCreated(IoSession session) throws Exception {
@@ -47,6 +73,7 @@ public class HiyoClientHandler implements IoHandler {
 		String json = JSON.toJSONString(bodyMap);
 		msg.setMsg(json);
 		session.write(msg);
+
 	}
 
 	@Override
@@ -58,11 +85,11 @@ public class HiyoClientHandler implements IoHandler {
 	public void sessionIdle(IoSession session, IdleStatus status)
 			throws Exception {
 		logger.info("IDLE:" + session);
-		doHeartBeat(session);
+		sendHeartBeat(session);
 
 	}
 
-	private void doHeartBeat(IoSession session) {
+	private void sendHeartBeat(IoSession session) {
 		HiyoMSG msg = new HiyoMSG();
 		byte[] cmd = new byte[2];
 		cmd[0] = 0x1f;
@@ -74,6 +101,8 @@ public class HiyoClientHandler implements IoHandler {
 		msg.setMsg(json);
 		logger.error("HIYO WRITE HEARTBEAT:" + session);
 		session.write(msg);
+		session.setAttribute(KEY_HEARTBEAT_TIME, System.currentTimeMillis());
+		sessionMap.put(session.getId(), session);
 	}
 
 	@Override
@@ -88,14 +117,17 @@ public class HiyoClientHandler implements IoHandler {
 			throws Exception {
 		logger.info("RECV MSG:" + message);
 		HiyoMSG msg = (HiyoMSG) message;
-		
-		byte[] cmdByts=msg.getCmd();
-		
-		int cmd=SocketUtil.byteArrayToInt(cmdByts, 0, 2);
-		if(8003==cmd){
+
+		byte[] cmdByts = msg.getCmd();
+
+		int cmd = SocketUtil.byteArrayToInt(cmdByts, 0, 2);
+		if (8001 == cmd) {
+			// heartbeat resp
+			sessionMap.remove(session.getId());
+		}
+		if (8003 == cmd) {
 			CacheUtil.getHiyoQueue().put(msg);
 		}
-		
 	}
 
 	@Override
