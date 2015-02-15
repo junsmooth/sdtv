@@ -7,12 +7,14 @@ import javax.annotation.PostConstruct;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Request;
+import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.potevio.sdtv.device.syshelp.WatchMSG;
+import com.potevio.sdtv.device.syshelp.S8.SyshelpClient;
 import com.potevio.sdtv.device.ythtjr.BedMsgHandler;
 import com.potevio.sdtv.domain.PlatformProperties;
 import com.potevio.sdtv.util.CacheUtil;
@@ -27,6 +29,30 @@ public class WatchMessageSender {
 	@PostConstruct
 	private void startSender() {
 		getAndSendSysHelpMSG();
+		getAndSendSyshelpString();
+	}
+
+	private void getAndSendSyshelpString() {
+		Executors.newSingleThreadExecutor().execute(new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						String msgString = CacheUtil.getSyshelpMessageQueue()
+								.take();
+
+						IoSession session = SyshelpClient.getSession();
+						if (session != null) {
+							session.write(msgString);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+		});
+
 	}
 
 	private void getAndSendSysHelpMSG() {

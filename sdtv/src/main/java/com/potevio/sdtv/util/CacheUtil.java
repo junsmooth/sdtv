@@ -10,16 +10,24 @@ public class CacheUtil {
 
 	private static LinkedBlockingQueue<BedMSG> ythtjrbedQueue = new LinkedBlockingQueue<BedMSG>();
 	private static LinkedBlockingQueue<WatchMSG> syshelpWatchQueue = new LinkedBlockingQueue<WatchMSG>();
+
+	private static LinkedBlockingQueue<HiyoMSG> hiyoQueue = new LinkedBlockingQueue<HiyoMSG>();
+
+	private static LinkedBlockingQueue<String> syshelpMessageQueue = new LinkedBlockingQueue<String>();
 	
-	private static LinkedBlockingQueue<HiyoMSG> hiyoQueue=new LinkedBlockingQueue<HiyoMSG>();
+
+	public static LinkedBlockingQueue<String> getSyshelpMessageQueue() {
+		return syshelpMessageQueue;
+	}
+
 	public static LinkedBlockingQueue<HiyoMSG> getHiyoQueue() {
 		return hiyoQueue;
 	}
 
 	private static BedMSG bedlatest = null;
-	
-	private static WatchMSG watchLatest=null;
-	
+
+	private static WatchMSG watchLatest = null;
+
 	public static WatchMSG getWatchLatest() {
 		return watchLatest;
 	}
