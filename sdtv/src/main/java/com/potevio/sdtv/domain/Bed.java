@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -16,15 +17,25 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Table(name = "t_bed")
 public class Bed {
 	@Id
-	@Column(name = "BED_ID")
+	@GeneratedValue
 	private int id;
+	
+	private String seriesId;
+	public String getSeriesId() {
+		return seriesId;
+	}
+
+	public void setSeriesId(String seriesId) {
+		this.seriesId = seriesId;
+	}
+
 	@Column(name = "PAT_NAME")
 	private String patname;
 	@Column(name = "DATA_DATE")
 	private Date occurTime;
-	private int status;
-	private int heartrating;
-	private int resping;
+	private String status;
+	private String heartrating;
+	private String resping;
 	@Transient
 	private int warn;
 
@@ -62,27 +73,29 @@ public class Bed {
 		this.occurTime = occurTime;
 	}
 
-	public int getStatus() {
+
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(int status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
-	public int getHeartrating() {
+	public String getHeartrating() {
 		return heartrating;
 	}
 
-	public void setHeartrating(int heartrating) {
+	public void setHeartrating(String heartrating) {
 		this.heartrating = heartrating;
 	}
 
-	public int getResping() {
+	public String getResping() {
 		return resping;
 	}
 
-	public void setResping(int resping) {
+	public void setResping(String resping) {
 		this.resping = resping;
 	}
+
 }

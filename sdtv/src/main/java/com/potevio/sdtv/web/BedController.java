@@ -28,9 +28,9 @@ public class BedController {
 			return "";
 		}
 		Bed b = new Bed();
-		b.setHeartrating(Integer.parseInt(msg.getHeartrating()));
-		b.setResping(Integer.parseInt(msg.getResping()));
-		b.setStatus(Integer.parseInt(msg.getStatus()));
+		b.setHeartrating(msg.getHeartrating());
+		b.setResping(msg.getResping());
+		b.setStatus(msg.getStatus());
 		b.setWarn(0);
 		return b;
 //

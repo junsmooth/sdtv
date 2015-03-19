@@ -84,7 +84,9 @@ public class HiyoClient {
 				logger.info("INTO Session Closed Filter.");
 				for (;;) {
 					try {
+
 						Thread.sleep(3000);
+						logger.info("Connecting to " + host);
 						ConnectFuture future = connector.connect();
 						future.awaitUninterruptibly();//
 						session = future.getSession();//
@@ -96,6 +98,8 @@ public class HiyoClient {
 									+ connector.getDefaultRemoteAddress()
 											.getPort() + "]");
 							break;
+						} else {
+							logger.info("Connecion failed.");
 						}
 					} catch (Exception ex) {
 						logger.info(",3:" + ex.getMessage());

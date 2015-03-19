@@ -1,6 +1,7 @@
 package com.potevio.sdtv.service;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.potevio.sdtv.device.hiyo.HiyoMSG;
 import com.potevio.sdtv.device.ythtjr.BedMSG;
+import com.potevio.sdtv.domain.Bed;
 import com.potevio.sdtv.domain.PlatformProperties;
 import com.potevio.sdtv.util.CacheUtil;
 
@@ -25,6 +27,9 @@ public class BedMessageSender {
 			.getLogger(BedMessageSender.class);
 	@Autowired
 	private PlatformProperties prop;
+
+	@Autowired
+	private BedDbService bedService;
 
 	@PostConstruct
 	public void send() {
@@ -76,6 +81,14 @@ public class BedMessageSender {
 								bedMsg.setResping(jsonMap.get("bre").toString());
 								bedMsg.setStatus("20");
 							}
+
+							Bed bed = new Bed();
+							bed.setSeriesId(bedMsg.getDeviceid());
+							bed.setOccurTime(new Date());
+							bed.setResping(bedMsg.getResping());
+							bed.setHeartrating(bedMsg.getHeartrating());
+							bed.setStatus(bedMsg.getStatus());
+							bedService.insert(bed);
 							sendBedMsg(bedMsg);
 						}
 
