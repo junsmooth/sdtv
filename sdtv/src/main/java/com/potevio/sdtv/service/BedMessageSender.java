@@ -75,7 +75,7 @@ public class BedMessageSender {
 								bedMsg.setResping(jsonMap.get("bre").toString());
 								bedMsg.setStatus("41");
 							}
-							if ("3".equals(alt) || "4".equals(alt)) {
+							if ("3".equals(alt) || "4".equals(alt)||"5".equals(alt)) {
 								bedMsg.setHeartrating(jsonMap.get("hit")
 										.toString());
 								bedMsg.setResping(jsonMap.get("bre").toString());
