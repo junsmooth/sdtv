@@ -6,6 +6,8 @@ import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.potevio.sdtv.device.qiaoya.ResultCode;
 import com.potevio.sdtv.device.qiaoya.server.processor.T10;
@@ -18,6 +20,7 @@ import com.potevio.sdtv.device.qiaoya.server.processor.T5;
 import com.potevio.sdtv.device.qiaoya.server.processor.T7;
 import com.potevio.sdtv.device.qiaoya.server.processor.T8;
 
+@Component
 public class QEMsgHandler extends IoHandlerAdapter {
 	private static final Logger logger = LoggerFactory
 			.getLogger(QEMsgHandler.class);
@@ -25,6 +28,9 @@ public class QEMsgHandler extends IoHandlerAdapter {
 	public static final String KEY_PACKAGE_SN = "key_package_sn";
 	private static ConcurrentHashMap<String, IoSession> sessionMap = new ConcurrentHashMap<String, IoSession>();
 	private static int TIME_OUT = 10000;
+
+	@Autowired
+	private QEMsgDispatcher dispatcher;
 
 	public static IoSession getSessionByImei(String imei) {
 		return sessionMap.get(imei);
@@ -61,7 +67,7 @@ public class QEMsgHandler extends IoHandlerAdapter {
 		}
 
 		logger.info("QE->" + qeMsg.getMsgCode() + "," + msg);
-		QEMsgDispatcher.dispatch(qeMsg);
+		dispatcher.dispatch(qeMsg);
 		session.setAttribute(KEY_IMEI, qeMsg.getImei());
 		session.setAttribute(KEY_PACKAGE_SN, qeMsg.getPackSN());
 		sessionMap.put(qeMsg.getImei(), session);

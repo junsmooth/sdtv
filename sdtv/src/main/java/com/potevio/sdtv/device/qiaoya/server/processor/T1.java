@@ -2,11 +2,14 @@ package com.potevio.sdtv.device.qiaoya.server.processor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import com.potevio.sdtv.device.qiaoya.server.QEBaseMsg;
 import com.potevio.sdtv.device.qiaoya.server.QEClientMsg;
 import com.potevio.sdtv.util.DateUtil;
 
+@Component
 public class T1 extends AbstractRequestMsg {
 
 	private String returnMsgCode = "S1";

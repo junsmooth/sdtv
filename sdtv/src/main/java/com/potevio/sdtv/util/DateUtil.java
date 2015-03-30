@@ -1,5 +1,6 @@
 package com.potevio.sdtv.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -16,5 +17,12 @@ public class DateUtil {
 
 	public static String currentCommoneDateString() {
 		return currentDateString("yyyy-MM-dd HH:mm:ss");
+	}
+
+	public static Date string2Date(String dateTime) throws ParseException {
+		SimpleDateFormat sfDateFormat = new SimpleDateFormat(
+				"yyyy-MM-dd HH:mm:ss");
+		return sfDateFormat.parse(dateTime);
+
 	}
 }

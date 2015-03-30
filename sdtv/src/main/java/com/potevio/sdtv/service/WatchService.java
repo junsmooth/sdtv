@@ -16,20 +16,18 @@ public class WatchService {
 	private WatchDao watchDao;
 
 	public void insertWatch(Watch watch) {
-		Watch w=watchDao.save(watch);
+		Watch w = watchDao.save(watch);
 		System.out.println(w);
 
 		// watchDao.getSession().save(watch);
 	}
 
 	public Watch latestData() {
-
-//		Page<Watch> page = watchDao.findAll(new PageRequest(0, 1,
-//				Direction.DESC, "createdate"));
-//
-//		Watch w = page.getContent().get(0);
-		
-		List<Watch> list=watchDao.findLatestWatch();
+		// Page<Watch> page = watchDao.findAll(new PageRequest(0, 1,
+		// Direction.DESC, "createdate"));
+		//
+		// Watch w = page.getContent().get(0);
+		List<Watch> list = watchDao.findLatestWatch();
 		return list.get(0);
 
 	}
