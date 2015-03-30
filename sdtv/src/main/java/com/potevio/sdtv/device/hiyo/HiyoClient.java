@@ -41,7 +41,16 @@ public class HiyoClient {
 
 	@PostConstruct
 	public void start() {
-		initConnector();
+		Executors.newSingleThreadExecutor().execute(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					initConnector();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		// checkSession();
 	}
 
@@ -102,7 +111,14 @@ public class HiyoClient {
 							logger.info("Connecion failed.");
 						}
 					} catch (Exception ex) {
-						logger.info(",3:" + ex.getMessage());
+						logger.info(""
+								+ host
+								+ ":"
+								+ port
+								+ "[]"
+								+ ",,:"
+								+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+										.format(new Date()));
 					}
 				}
 			}
@@ -134,7 +150,6 @@ public class HiyoClient {
 								.format(new Date()));
 				break;
 			} catch (Exception e) {
-				e.printStackTrace();
 				logger.error(
 						""
 								+ host
@@ -146,7 +161,7 @@ public class HiyoClient {
 										.format(new Date())
 								+ ", MSG,MSGIP,MSG,:" + e.getMessage(), e);
 				try {
-					Thread.sleep(5000);
+					Thread.sleep(30000);
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}

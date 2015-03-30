@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
 
@@ -35,7 +36,18 @@ public class SyshelpClient {
 
 	@PostConstruct
 	public void start() {
-		initConnector();
+		Executors.newSingleThreadExecutor().execute(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					initConnector();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
 	}
 
 	private void initConnector() {
@@ -47,7 +59,7 @@ public class SyshelpClient {
 				logger.info("INTO Session Closed Filter.");
 				for (;;) {
 					try {
-						Thread.sleep(3000);
+						Thread.sleep(5000);
 						ConnectFuture future = connector.connect();
 						future.awaitUninterruptibly();//
 						session = future.getSession();//
@@ -61,7 +73,15 @@ public class SyshelpClient {
 							break;
 						}
 					} catch (Exception ex) {
-						logger.info(",3:" + ex.getMessage());
+						logger.error(""
+								+ host
+								+ ":"
+								+ port
+								+ ""
+								+ ",,:"
+								+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+										.format(new Date()) + ","
+								+ ex.getMessage());
 					}
 				}
 			}
@@ -91,19 +111,16 @@ public class SyshelpClient {
 								.format(new Date()));
 				break;
 			} catch (Exception e) {
-				e.printStackTrace();
-				logger.error(
-						""
-								+ host
-								+ ":"
-								+ port
-								+ ""
-								+ ",,:"
-								+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-										.format(new Date())
-								+ ", MSG,MSGIP,MSG,:" + e.getMessage(), e);
+				logger.error(""
+						+ host
+						+ ":"
+						+ port
+						+ ""
+						+ ",,:"
+						+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+								.format(new Date()) + "," + e.getMessage());
 				try {
-					Thread.sleep(5000);
+					Thread.sleep(30000);
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}

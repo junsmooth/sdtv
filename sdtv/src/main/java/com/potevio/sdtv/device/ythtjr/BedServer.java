@@ -21,7 +21,7 @@ public class BedServer {
 	@PostConstruct
 	public void start() {
 
-		IoAcceptor acceptor = new NioSocketAcceptor();
+		NioSocketAcceptor acceptor = new NioSocketAcceptor();
 		acceptor.getFilterChain().addLast("codec",
 				new ProtocolCodecFilter(new BedCodecFactory()));
 		acceptor.getFilterChain().addLast("threadPool",
@@ -29,6 +29,7 @@ public class BedServer {
 		acceptor.setHandler(new BedMsgHandler());
 		acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
 		acceptor.getSessionConfig().setWriteTimeout(30);
+		acceptor.setReuseAddress(true);
 		try {
 			acceptor.bind(new InetSocketAddress(PORT));
 		} catch (IOException e) {

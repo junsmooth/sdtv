@@ -23,7 +23,7 @@ public class SysHelpWatchServer {
 	@PostConstruct
 	public void start() {
 
-		IoAcceptor acceptor = new NioSocketAcceptor();
+		NioSocketAcceptor acceptor = new NioSocketAcceptor();
 		acceptor.getFilterChain().addLast(
 				"codec",
 				new ProtocolCodecFilter(new TextLineCodecFactory(Charset
@@ -33,6 +33,7 @@ public class SysHelpWatchServer {
 		acceptor.setHandler(new WatchMsgHandler());
 		acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
 		acceptor.getSessionConfig().setWriteTimeout(30);
+		acceptor.setReuseAddress(true);
 		try {
 			acceptor.bind(new InetSocketAddress(PORT));
 		} catch (IOException e) {
