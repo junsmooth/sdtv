@@ -107,7 +107,6 @@ public class QEMsgHandler extends IoHandlerAdapter {
 			while (System.currentTimeMillis() - start < TIME_OUT) {
 				QEClientMsg msg = T46.getAndRemoveMsg(createReturnKey(imei,
 						baseMsg));
-				System.out.println(msg);
 				if (msg != null) {
 					return ResultCode.getSuccessMsg();
 				} else {
@@ -166,7 +165,6 @@ public class QEMsgHandler extends IoHandlerAdapter {
 		if (session != null) {
 			QEBaseMsg baseMsg = Util.createBaseMsg(session, "S18", imei);
 			baseMsg.getParamsList().add(params);
-
 			session.write(baseMsg.toString());
 			// wait
 			long start = System.currentTimeMillis();

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.potevio.sdtv.device.syshelp.WatchMSG;
 import com.potevio.sdtv.util.CacheUtil;
+import com.potevio.sdtv.util.DateUtil;
 
 public class WatchMsgHandler extends IoHandlerAdapter {
 	private static final Logger logger = LoggerFactory
@@ -16,7 +17,7 @@ public class WatchMsgHandler extends IoHandlerAdapter {
 	public void messageReceived(IoSession session, Object message)
 			throws Exception {
 		String msg = message.toString();
-		CacheUtil.getSyshelpMessageQueue().add(msg);
+//		CacheUtil.getSyshelpMessageQueue().add(msg);
 		WatchMSG watch = new WatchMSG();
 		logger.info("IN WATCH:" + msg);
 		String str = msg.replace('[', ' ').replace(']', ' ').trim();
@@ -25,7 +26,8 @@ public class WatchMsgHandler extends IoHandlerAdapter {
 		String ver = arr[0];
 		String V1 = "V1.0.0";
 		String mobile = arr[6];
-
+		String timeStr=arr[4];
+		watch.setDataTime(DateUtil.string2Date(timeStr));
 		watch.setMobile(mobile);
 		watch.setDatatype("");
 		if (str.contains("mt_pulse")) {
@@ -50,12 +52,12 @@ public class WatchMsgHandler extends IoHandlerAdapter {
 		}
 
 		watch.setTimen(arr[arr.length - 1]);
-
-		if (str.contains("LBS")) {
-			// LBS request syshelp web to get gps
-		} else {
-			CacheUtil.getSyshelpWatchQueue().put(watch);
-		}
+		CacheUtil.getSyshelpWatchQueue().put(watch);
+//		if (str.contains("LBS")) {
+//			// LBS request syshelp web to get gps
+//		} else {
+//			CacheUtil.getSyshelpWatchQueue().put(watch);
+//		}
 
 	}
 

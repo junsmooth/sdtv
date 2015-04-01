@@ -1,5 +1,7 @@
 package com.potevio.sdtv.device.syshelp;
 
+import java.util.Date;
+
 public class WatchMSG {
 	public static final String DATATYPE_PUSE="pulse";
 	public static final String DATATYPE_GPS="GPS_AT";
@@ -8,6 +10,14 @@ public class WatchMSG {
 	private String pulsecount;
 	private String longitude="0.000000";
 	private String timen;
+
+	private Date dataTime;
+	public Date getDataTime() {
+		return dataTime;
+	}
+	public void setDataTime(Date dataTime) {
+		this.dataTime = dataTime;
+	}
 	public String getTimen() {
 		return timen;
 	}

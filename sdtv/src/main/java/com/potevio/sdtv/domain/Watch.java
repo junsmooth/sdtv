@@ -1,12 +1,16 @@
 package com.potevio.sdtv.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,6 +25,68 @@ public class Watch implements Serializable {
 	public static final String DT_GPS = "gps";
 	public static final String DT_LBS = "lbs";
 	public static final String DT_STEP = "step";
+	public static final String VENDOR_QE = "QE";
+	public static final String VENDOR_SYSHELP = "SYSHELP";
+
+	private String longitude = "0.000000";
+	private String latitude = "0.000000";
+	private String height;
+	private String speed;
+
+	public String getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(String speed) {
+		this.speed = speed;
+	}
+
+	public String getHeight() {
+		return height;
+	}
+
+	public void setHeight(String height) {
+		this.height = height;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public void addLbs(LBS lbs) {
+
+		if (lbsList == null) {
+			synchronized (this) {
+				if (lbsList == null) {
+					lbsList = new ArrayList<LBS>();
+				}
+			}
+		}
+		lbsList.add(lbs);
+	}
+
+	@OneToMany(mappedBy = "watch", cascade = CascadeType.ALL)
+	private List<LBS> lbsList;
+
+	public List<LBS> getLbsList() {
+		return lbsList;
+	}
+
+	public void setLbsList(List<LBS> lbsList) {
+		this.lbsList = lbsList;
+	}
 
 	@Id
 	@GeneratedValue
@@ -54,21 +120,12 @@ public class Watch implements Serializable {
 	private String stepcount;
 	@Column(name = "createdate")
 	private Date createDate;
-	private String lbs;
 	private String gps;
 	private String vendor;
 	private Date dataTime;
 
 	public Long getId() {
 		return id;
-	}
-
-	public String getLbs() {
-		return lbs;
-	}
-
-	public void setLbs(String lbs) {
-		this.lbs = lbs;
 	}
 
 	public String getGps() {

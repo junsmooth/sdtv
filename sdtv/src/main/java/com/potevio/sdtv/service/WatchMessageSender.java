@@ -2,8 +2,7 @@ package com.potevio.sdtv.service;
 
 import java.io.IOException;
 import java.net.URI;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -28,12 +27,13 @@ import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.potevio.sdtv.device.syshelp.WatchMSG;
 import com.potevio.sdtv.device.syshelp.S8.SyshelpClient;
+import com.potevio.sdtv.domain.LBS;
 import com.potevio.sdtv.domain.PlatformProperties;
+import com.potevio.sdtv.domain.Watch;
 import com.potevio.sdtv.util.CacheUtil;
 
 @Component
@@ -43,6 +43,9 @@ public class WatchMessageSender {
 	private static Logger logger = LoggerFactory
 			.getLogger(WatchMessageSender.class);
 
+	@Autowired
+	private WatchService watchService;
+
 	private final static String ACCEPT = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
 	private final static String AGENT = "Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0";
 
@@ -50,6 +53,24 @@ public class WatchMessageSender {
 	private void startSender() {
 		getAndSendSysHelpMSG();
 		getAndSendSyshelpString();
+		getAndSendWatch();
+	}
+
+	private void getAndSendWatch() {
+
+		Executors.newSingleThreadExecutor().execute(new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						Watch msg = (Watch) CacheUtil.getWatchQueue().take();
+						sendWatch(msg);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
 	}
 
 	private void retriveMessage(String timeStr) throws Exception {
@@ -158,14 +179,16 @@ public class WatchMessageSender {
 			String resultString = Request.Get(urlString).execute()
 					.returnContent().asString();
 			System.out.println(resultString);
-			String xString=StringUtils.substringBetween(resultString, "x\":", ",");
+			String xString = StringUtils.substringBetween(resultString, "x\":",
+					",");
 			System.out.println(xString);
-			String yString=StringUtils.substringAfterLast(resultString, "y\":");
-			yString=StringUtils.substringBefore(yString, "}");
+			String yString = StringUtils.substringAfterLast(resultString,
+					"y\":");
+			yString = StringUtils.substringBefore(yString, "}");
 			System.out.println(yString);
 			pointMapXY.setX(xString);
 			pointMapXY.setY(yString);
-			
+
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -233,31 +256,128 @@ public class WatchMessageSender {
 
 	}
 
-	private void sendWatchMSG(WatchMSG msg) {
-		String url = prop.getBaseurl() + "/" + prop.getWatchaction();
-		String parm = "?" + "mobile=" + msg.getMobile() + "&datatype="
-				+ msg.getDatatype();
-		if ("pulse".equals(msg.getDatatype())) {
-			parm += "&pulsecount=" + msg.getPulsecount();
-
-		} else if ("GPS_AT".equals(msg.getDatatype())) {
-			parm += "&longitude=" + msg.getLongitude() + "&latitude="
-					+ msg.getLatitude() + "&height=" + msg.getHeight()
-					+ "&speed=" + msg.getSpeed() + "&timen" + msg.getTimen()
-					+ "&LBS=" + msg.getLBS();
+	private void sendWatch(Watch watch) {
+		String typeString = watch.getDataType();
+		if (typeString.equals(Watch.DT_PULSE)) {
+			typeString = WatchMSG.DATATYPE_PUSE;
+		} else if (typeString.equals(Watch.DT_GPS)
+				|| typeString.equals(Watch.DT_LBS)) {
+			typeString = WatchMSG.DATATYPE_GPS;
 		}
+		String url = prop.getBaseurl() + "/" + prop.getWatchaction();
+		String parm = "?" + "mobile=" + watch.getImeiString() + "&datatype="
+				+ typeString;
+		if ("pulse".equals(typeString)) {
+			parm += "&pulsecount=" + watch.getHeartbeat();
 
+		} else if ("GPS_AT".equals(typeString)) {
+			// TODO lbs
+			String lbsString = "";
+			/**
+			 * num$mcc$mnc#lac,cell,power,level#lac,cell,power,level
+			 * 
+			 * 
+			 */
+			if (watch.getLbsList().size() > 0) {
+				StringBuffer sBuffer = new StringBuffer();
+				sBuffer.append(watch.getLbsList().size()).append(";");
+				LBS common = watch.getLbsList().get(0);
+				sBuffer.append(common.getMcc()).append(";");
+				sBuffer.append(common.getMnc());
+				for (LBS lbsobj : watch.getLbsList()) {
+					sBuffer.append("~");
+					sBuffer.append(lbsobj.getLac()).append("_");
+					sBuffer.append(lbsobj.getCell()).append("_");
+					sBuffer.append(lbsobj.getPower()).append("_");
+					sBuffer.append(lbsobj.getLevel());
+				}
+				lbsString = sBuffer.toString();
+			}
+
+			parm += "&longitude=" + watch.getLongitude() + "&latitude="
+					+ watch.getLatitude() + "&height=" + watch.getHeight()
+					+ "&speed=" + watch.getSpeed() + "&timen="
+					+ watch.getDataTime().getTime() + "&LBS=" + lbsString;
+		}
 		String contentUrl = url + parm;
 		try {
 			logger.info("OUT WATCH:" + contentUrl);
 			String result = Request.Get(contentUrl).execute().returnContent()
 					.asString();
-			// logger.info("OUT WATCH RESULT:" + contentUrl);
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+	}
+
+	private void sendWatchMSG(WatchMSG msg) {
+
+		Watch w = new Watch();
+		w.setCreateDate(new Date());
+		if ("pulse".equals(msg.getDatatype())) {
+			w.setDataType(Watch.DT_PULSE);
+		} else {
+			w.setDataType(Watch.DT_GPS);
+		}
+		w.setDataTime(msg.getDataTime());
+		w.setHeartbeat(msg.getPulsecount());
+		w.setHeight(msg.getHeight());
+		w.setImeiString(msg.getMobile());
+		w.setLatitude(msg.getLatitude());
+		w.setLongitude(msg.getLongitude());
+		w.setSpeed(msg.getSpeed());
+		w.setVendor(Watch.VENDOR_SYSHELP);
+		String lbs = msg.getLBS();
+		if (StringUtils.isNotBlank(lbs)) {
+			String numString = StringUtils.substringBefore(lbs, ";");
+			int num = Integer.parseInt(numString);
+			String body = StringUtils.substringAfter(lbs, ";");
+			String[] stations = StringUtils.split(body, ";");
+			for (int i = 0; i < num; i++) {
+				String str = stations[i];
+				String[] arr = StringUtils.split(str, ",");
+				String mccMnc = arr[0];
+				String lac = arr[1];
+				String cell = arr[2];
+				LBS lbs2 = new LBS();
+				lbs2.setMcc(StringUtils.substring(mccMnc, 0, 3));
+				lbs2.setMnc(StringUtils.substring(mccMnc, 3));
+				lbs2.setLac(lac);
+				lbs2.setCell(cell);
+				w.addLbs(lbs2);
+				lbs2.setWatch(w);
+			}
+
+		}
+		watchService.insertWatch(w);
+		sendWatch(w);
+
+		// String url = prop.getBaseurl() + "/" + prop.getWatchaction();
+		// String parm = "?" + "mobile=" + msg.getMobile() + "&datatype="
+		// + msg.getDatatype();
+		// if ("pulse".equals(msg.getDatatype())) {
+		// parm += "&pulsecount=" + msg.getPulsecount();
+		//
+		// } else if ("GPS_AT".equals(msg.getDatatype())) {
+		// parm += "&longitude=" + msg.getLongitude() + "&latitude="
+		// + msg.getLatitude() + "&height=" + msg.getHeight()
+		// + "&speed=" + msg.getSpeed() + "&timen" + msg.getTimen()
+		// + "&LBS=" + msg.getLBS();
+		// }
+		//
+		// String contentUrl = url + parm;
+		// try {
+		// logger.info("OUT WATCH:" + contentUrl);
+		// String result = Request.Get(contentUrl).execute().returnContent()
+		// .asString();
+		// // logger.info("OUT WATCH RESULT:" + contentUrl);
+		// } catch (ClientProtocolException e) {
+		// e.printStackTrace();
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
 
 	}
 }

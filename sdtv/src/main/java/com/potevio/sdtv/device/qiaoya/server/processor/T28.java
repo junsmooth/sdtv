@@ -13,6 +13,7 @@ import com.potevio.sdtv.device.qiaoya.server.QEClientMsg;
 import com.potevio.sdtv.device.qiaoya.server.Util;
 import com.potevio.sdtv.domain.Watch;
 import com.potevio.sdtv.service.WatchService;
+import com.potevio.sdtv.util.CacheUtil;
 import com.potevio.sdtv.util.DateUtil;
 
 /**
@@ -51,6 +52,7 @@ public class T28 extends AbstractRequestMsg {
 			}
 			watch.setCreateDate(new Date());
 			watchService.insertWatch(watch);
+			CacheUtil.getWatchQueue().put(watch);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

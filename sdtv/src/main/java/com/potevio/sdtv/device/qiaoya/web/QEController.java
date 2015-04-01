@@ -49,10 +49,10 @@ public class QEController {
 	@RequestMapping(value = { "{imei}/S8" })
 	public @ResponseBody ResultCode S8(@PathVariable String imei,
 			HttpServletRequest req) {
-		
-		String paramString=req.getParameter("param");
-		if(StringUtils.isEmpty(paramString)){
-			paramString="";
+
+		String paramString = req.getParameter("param");
+		if (StringUtils.isEmpty(paramString)) {
+			paramString = "";
 		}
 		logger.info(req.getRequestURL().toString());
 		// return QEMsgHandler.sendS46Message(imei, params);
@@ -68,19 +68,48 @@ public class QEController {
 	 * @param req
 	 * @return
 	 */
-	@RequestMapping(value = "{imei}/S19/{params}")
-	public @ResponseBody ResultCode S19(@PathVariable String imei,
-			@PathVariable String params, HttpServletRequest req) {
-		logger.info(req.getRequestURL().toString());
-		String[] arr = params.split(";");
-		if (arr.length > 6) {
-			return new ResultCode(false, "Only 6 family number allowd");
-		}
+//	@RequestMapping(value = "{imei}/S19/{params}")
+//	public @ResponseBody ResultCode S19(@PathVariable String imei,
+//			@PathVariable String params, HttpServletRequest req) {
+//		logger.info(req.getRequestURL().toString());
+//		String[] arr = params.split(";");
+//		if (arr.length > 6) {
+//			return new ResultCode(false, "Only 6 family number allowd");
+//		}
+//
+//		return QEMsgHandler.sendS19Message(imei, params);
+//
+//	}
 
-		return QEMsgHandler.sendS19Message(imei, params);
+	@RequestMapping(value = "{imei}/S19")
+	public @ResponseBody ResultCode S19(@PathVariable String imei,
+			HttpServletRequest req) {
+		logger.info(req.getRequestURL().toString());
+		String paramString = req.getParameter("param");
+		if (StringUtils.isEmpty(paramString)) {
+			paramString = ";;";
+		} else {
+			String[] arr = paramString.split(";");
+			if (arr.length > 3) {
+				return new ResultCode(false, "Only 3 family numbers allowed");
+			}
+		}
+		return QEMsgHandler.sendS19Message(imei, paramString);
 
 	}
 
+	// @RequestMapping(value = "{imei}/S18/{params}")
+	// public @ResponseBody ResultCode S18(@PathVariable String imei,
+	// @PathVariable String params, HttpServletRequest req) {
+	// logger.info(req.getRequestURL().toString());
+	//
+	// String[] arr = params.split(";");
+	// if (arr.length > 3) {
+	// return new ResultCode(false, "Only 3 SOS number allowed");
+	// }
+	//
+	// return QEMsgHandler.sendS18Message(imei, params);
+	// }
 	/**
 	 * SOS Number
 	 * 
@@ -90,17 +119,20 @@ public class QEController {
 	 * @param req
 	 * @return
 	 */
-	@RequestMapping(value = "{imei}/S18/{params}")
+	@RequestMapping(value = "{imei}/S18")
 	public @ResponseBody ResultCode S18(@PathVariable String imei,
-			@PathVariable String params, HttpServletRequest req) {
+			HttpServletRequest req) {
 		logger.info(req.getRequestURL().toString());
-
-		String[] arr = params.split(";");
-		if (arr.length > 3) {
-			return new ResultCode(false, "Only 3 family number allowd");
+		String paramString = req.getParameter("param");
+		if (StringUtils.isEmpty(paramString)) {
+			paramString = ";;";
+		} else {
+			String[] arr = paramString.split(";");
+			if (arr.length > 3) {
+				return new ResultCode(false, "Only 3 SOS numbers allowed");
+			}
 		}
-
-		return QEMsgHandler.sendS18Message(imei, params);
+		return QEMsgHandler.sendS18Message(imei, paramString);
 	}
 
 	/**
