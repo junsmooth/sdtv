@@ -29,6 +29,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.potevio.sdtv.device.minigps.CellTower;
+import com.potevio.sdtv.device.minigps.MiniGPS;
+import com.potevio.sdtv.device.minigps.MiniGPSRequest;
+import com.potevio.sdtv.device.minigps.MiniGPSResult;
 import com.potevio.sdtv.device.syshelp.WatchMSG;
 import com.potevio.sdtv.device.syshelp.S8.SyshelpClient;
 import com.potevio.sdtv.domain.LBS;
@@ -52,7 +56,7 @@ public class WatchMessageSender {
 	@PostConstruct
 	private void startSender() {
 		getAndSendSysHelpMSG();
-		getAndSendSyshelpString();
+		// getAndSendSyshelpString();
 		getAndSendWatch();
 	}
 
@@ -258,6 +262,10 @@ public class WatchMessageSender {
 
 	private void sendWatch(Watch watch) {
 		String typeString = watch.getDataType();
+		if (typeString == null) {
+			// not pulse or gps
+			return;
+		}
 		if (typeString.equals(Watch.DT_PULSE)) {
 			typeString = WatchMSG.DATATYPE_PUSE;
 		} else if (typeString.equals(Watch.DT_GPS)
@@ -316,9 +324,11 @@ public class WatchMessageSender {
 
 		Watch w = new Watch();
 		w.setCreateDate(new Date());
-		if ("pulse".equals(msg.getDatatype())) {
+		// pulse, GPS, LBS
+
+		if (WatchMSG.DATATYPE_PUSE.equals(msg.getDatatype())) {
 			w.setDataType(Watch.DT_PULSE);
-		} else {
+		} else if (WatchMSG.DATATYPE_GPS.equals(msg.getDatatype())) {
 			w.setDataType(Watch.DT_GPS);
 		}
 		w.setDataTime(msg.getDataTime());
@@ -330,6 +340,7 @@ public class WatchMessageSender {
 		w.setSpeed(msg.getSpeed());
 		w.setVendor(Watch.VENDOR_SYSHELP);
 		String lbs = msg.getLBS();
+		logger.info("syshelp LBS ->" + lbs);
 		if (StringUtils.isNotBlank(lbs)) {
 			String numString = StringUtils.substringBefore(lbs, ";");
 			int num = Integer.parseInt(numString);
@@ -349,7 +360,34 @@ public class WatchMessageSender {
 				w.addLbs(lbs2);
 				lbs2.setWatch(w);
 			}
+			// parse lbs
 
+			List<LBS> lbsList = w.getLbsList();
+			if (lbsList != null && lbsList.size() > 0) {
+				LBS selctedLbs = lbsList.get(0);
+				MiniGPSRequest req = new MiniGPSRequest();
+				CellTower ct = new CellTower(selctedLbs.getMcc(),
+						Integer.parseInt(selctedLbs.getMnc()) + "",
+						selctedLbs.getLac(), selctedLbs.getCell());
+				req.addCellTower(ct);
+				try {
+					MiniGPSResult rst = MiniGPS.getGPS(req);
+					logger.info("MiniGPS Location:" + rst.getLocation());
+					double lat = rst.getLocation().getLatitude();
+					rst.getLocation().getAddress().getStreet();
+					double lon = rst.getLocation().getLongitude();
+					MapXY pointMapXY = new MapXY();
+					pointMapXY.setX(lon + "");
+					pointMapXY.setY(lat + "");
+					// transferToBDMap(pointMapXY);
+					w.setStreet(rst.getLocation().getAddress().getStreet());
+					w.setLatitude(pointMapXY.getY());
+					w.setLongitude(pointMapXY.getX());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		watchService.insertWatch(w);
 		sendWatch(w);

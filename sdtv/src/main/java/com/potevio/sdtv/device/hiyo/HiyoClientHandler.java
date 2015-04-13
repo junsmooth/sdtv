@@ -84,7 +84,7 @@ public class HiyoClientHandler implements IoHandler {
 	@Override
 	public void sessionIdle(IoSession session, IdleStatus status)
 			throws Exception {
-		logger.info("IDLE:" + session);
+//		logger.info("IDLE:" + session);
 		sendHeartBeat(session);
 
 	}
@@ -99,7 +99,7 @@ public class HiyoClientHandler implements IoHandler {
 		bodyMap.put("apikey", "e121a422cd24c55005ea81b0ade9d7f9");
 		String json = JSON.toJSONString(bodyMap);
 		msg.setMsg(json);
-		logger.error("HIYO WRITE HEARTBEAT:" + session);
+//		logger.error("HIYO WRITE HEARTBEAT:" + session);
 		session.write(msg);
 		session.setAttribute(KEY_HEARTBEAT_TIME, System.currentTimeMillis());
 		sessionMap.put(session.getId(), session);

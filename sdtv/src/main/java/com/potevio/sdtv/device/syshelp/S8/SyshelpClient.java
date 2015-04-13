@@ -20,7 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
+//syshelp server is down, so close this
 public class SyshelpClient {
 	private static final Logger logger = LoggerFactory
 			.getLogger(SyshelpClient.class);
@@ -34,7 +35,7 @@ public class SyshelpClient {
 		return session;
 	}
 
-	@PostConstruct
+//	@PostConstruct
 	public void start() {
 		Executors.newSingleThreadExecutor().execute(new Runnable() {
 

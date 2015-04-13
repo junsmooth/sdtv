@@ -27,6 +27,14 @@ public class Watch implements Serializable {
 	public static final String DT_STEP = "step";
 	public static final String VENDOR_QE = "QE";
 	public static final String VENDOR_SYSHELP = "SYSHELP";
+	private String street;
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
 
 	private String longitude = "0.000000";
 	private String latitude = "0.000000";

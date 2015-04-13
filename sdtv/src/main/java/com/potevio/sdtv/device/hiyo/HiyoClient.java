@@ -130,7 +130,7 @@ public class HiyoClient {
 
 		connector.setHandler(new HiyoClientHandler());
 		connector.setConnectTimeoutCheckInterval(30);
-		connector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 30);
+		connector.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 60);
 		connector.getSessionConfig().setKeepAlive(true);
 		connector.getSessionConfig().setWriteTimeout(10);
 		connector.setDefaultRemoteAddress(new InetSocketAddress(host, port));
