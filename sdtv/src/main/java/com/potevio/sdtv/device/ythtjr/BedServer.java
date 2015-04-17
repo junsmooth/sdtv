@@ -11,12 +11,16 @@ import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.executor.ExecutorFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BedServer {
 
 	private static int PORT = 5858;
+
+	@Autowired
+	private BedMsgHandler handler;
 
 	@PostConstruct
 	public void start() {
@@ -26,7 +30,7 @@ public class BedServer {
 				new ProtocolCodecFilter(new BedCodecFactory()));
 		acceptor.getFilterChain().addLast("threadPool",
 				new ExecutorFilter(Executors.newCachedThreadPool()));
-		acceptor.setHandler(new BedMsgHandler());
+		acceptor.setHandler(handler);
 		acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
 		acceptor.getSessionConfig().setWriteTimeout(30);
 		acceptor.setReuseAddress(true);

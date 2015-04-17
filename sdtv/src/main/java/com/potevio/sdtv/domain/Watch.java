@@ -164,12 +164,17 @@ public class Watch implements Serializable {
 		this.id = id;
 	}
 
+
 	@Override
 	public String toString() {
-		return "Watch [id=" + id + ", temperature=" + temperature
-				+ ", humidity=" + humidity + ", heartbeat=" + heartbeat
-				+ ", stepcount=" + stepcount + ", createdate=" + createDate
-				+ "]";
+		return "Watch [street=" + street + ", longitude=" + longitude
+				+ ", latitude=" + latitude + ", height=" + height + ", speed="
+				+ speed + ", lbsList=" + lbsList + ", id=" + id
+				+ ", temperature=" + temperature + ", dataType=" + dataType
+				+ ", imeiString=" + imeiString + ", humidity=" + humidity
+				+ ", heartbeat=" + heartbeat + ", stepcount=" + stepcount
+				+ ", createDate=" + createDate + ", gps=" + gps + ", vendor="
+				+ vendor + ", dataTime=" + dataTime + "]";
 	}
 
 	public String getTemperature() {

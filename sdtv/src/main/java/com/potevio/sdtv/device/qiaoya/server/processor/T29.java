@@ -10,10 +10,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.potevio.sdtv.device.minigps.CellTower;
+import com.potevio.sdtv.device.minigps.MiniGPS;
+import com.potevio.sdtv.device.minigps.MiniGPSRequest;
+import com.potevio.sdtv.device.minigps.MiniGPSResult;
 import com.potevio.sdtv.device.qiaoya.server.QEClientMsg;
 import com.potevio.sdtv.device.qiaoya.server.Util;
 import com.potevio.sdtv.domain.LBS;
 import com.potevio.sdtv.domain.Watch;
+import com.potevio.sdtv.service.MapXY;
 import com.potevio.sdtv.service.WatchService;
 import com.potevio.sdtv.util.CacheUtil;
 import com.potevio.sdtv.util.DateUtil;
@@ -78,9 +83,9 @@ public class T29 extends AbstractRequestMsg {
 						lbs.setMnc(mnc);
 						String[] lbsArr = StringUtils.split(bodyArr[i], "|");
 
-						String lac = lbsArr[0];
+						String lac = Integer.parseInt(lbsArr[0],16)+"";
 
-						String cell = lbsArr[1];
+						String cell = Integer.parseInt(lbsArr[1],16)+"";
 
 						String power = lbsArr[2];
 
@@ -109,14 +114,55 @@ public class T29 extends AbstractRequestMsg {
 				lbs.setMnc(arr[1]);
 				String bodyStr = StringUtils.substringAfter(lbsString, "|");
 				String[] bodyArr = StringUtils.split(bodyStr, "|");
-				lbs.setLac(bodyArr[0]);
-				lbs.setCell(bodyArr[1]);
+				lbs.setLac(Integer.parseInt(bodyArr[0],16)+"");
+				lbs.setCell(Integer.parseInt(bodyArr[1],16)+"");
 				lbs.setWatch(watch);
 				watch.addLbs(lbs);
 			}
 			// watch.setLbsList(lbsList);
 			// lbs.setWatch
 			// savewwatch
+			// if has longitude , parse gps
+			if (!"0".equals(longitude) && !"0".equals(latitude)) {
+				logger.info("QE -> GPS DATA ,lon:" + longitude + ",lat:"
+						+ latitude);
+
+			} else {
+				// else parse lbs
+				List<LBS> lbsList = watch.getLbsList();
+				if (lbsList != null && lbsList.size() > 0) {
+					LBS selctedLbs = lbsList.get(0);
+					MiniGPSRequest req = new MiniGPSRequest();
+					CellTower ct = new CellTower(selctedLbs.getMcc(),
+							Integer.parseInt(selctedLbs.getMnc()) + "",
+							selctedLbs.getLac(), selctedLbs.getCell());
+					req.addCellTower(ct);
+					try {
+						MiniGPSResult rst = MiniGPS.getGPS(req);
+						if(rst!=null){
+							logger.info("MiniGPS Location:" + rst.getLocation());
+							double lat = rst.getLocation().getLatitude();
+							rst.getLocation().getAddress().getStreet();
+							double lon = rst.getLocation().getLongitude();
+							MapXY pointMapXY = new MapXY();
+							pointMapXY.setX(lon + "");
+							pointMapXY.setY(lat + "");
+							// transferToBDMap(pointMapXY);
+							watch.setStreet(rst.getLocation().getAddress()
+									.getStreet());
+							watch.setLatitude(pointMapXY.getY());
+							watch.setLongitude(pointMapXY.getX());
+						}else{
+							logger.error("LBS Parse Failed.");
+						}
+						
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+
 			watchService.insertWatch(watch);
 			CacheUtil.getWatchQueue().put(watch);
 		} catch (Exception e) {
