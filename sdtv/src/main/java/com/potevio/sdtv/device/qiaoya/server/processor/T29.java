@@ -131,7 +131,8 @@ public class T29 extends AbstractRequestMsg {
 				BaiduAPI.transferToBDMap(mapXY);
 				watch.setLongitude(mapXY.getX());
 				watch.setLatitude(mapXY.getY());
-
+				logger.info("QE -> BaiDu GPS DATA ,lon:" + mapXY.getX() + ",lat:"
+						+ mapXY.getY());
 			} else {
 				// else parse lbs
 				List<LBS> lbsList = watch.getLbsList();
