@@ -77,169 +77,171 @@ public class WatchMessageSender {
 		});
 	}
 
-	private void retriveMessage(String timeStr) throws Exception {
-		Thread.sleep(20000);
-		BasicCookieStore cookieStore = new BasicCookieStore();
-		CloseableHttpClient httpclient = HttpClients.custom()
-				.setDefaultCookieStore(cookieStore).build();
-		try {
-			HttpUriRequest login = RequestBuilder
-					.post()
-					.setUri(new URI("http://" + SyshelpClient.host
-							+ ":8006/Web/Common/Member.ashx"))
-					.addParameter(
-							"__VIEWSTATE",
-							"/wEPDwUKMTIxODI1MjU1NGQYAQUeX19Db250cm9sc1JlcXVpcmVQb3N0QmFja0tleV9fFgEFCmlzcmVtZW1iZXIlno+U3SXD6L3iitGwlUv1IIc4KzaEqTcZ2ri3qWLlZQ==")
-					.addParameter("__VIEWSTATEGENERATOR", "C714824B")
+	// private void retriveMessage(String timeStr) throws Exception {
+	// Thread.sleep(20000);
+	// BasicCookieStore cookieStore = new BasicCookieStore();
+	// CloseableHttpClient httpclient = HttpClients.custom()
+	// .setDefaultCookieStore(cookieStore).build();
+	// try {
+	// HttpUriRequest login = RequestBuilder
+	// .post()
+	// .setUri(new URI("http://" + SyshelpClient.host
+	// + ":8006/Web/Common/Member.ashx"))
+	// .addParameter(
+	// "__VIEWSTATE",
+	// "/wEPDwUKMTIxODI1MjU1NGQYAQUeX19Db250cm9sc1JlcXVpcmVQb3N0QmFja0tleV9fFgEFCmlzcmVtZW1iZXIlno+U3SXD6L3iitGwlUv1IIc4KzaEqTcZ2ri3qWLlZQ==")
+	// .addParameter("__VIEWSTATEGENERATOR", "C714824B")
+	//
+	// .addParameter(
+	// "__EVENTVALIDATION",
+	// "/wEWBALAtOC8DwKpwK/OBgK1qbSRCwLQw5PyCxQBzqH6uli+cb6wzo/8F6JXFibokbRS/JQu01cmT8nV")
+	// .addParameter("postType", "login")
+	// .addParameter("txtLoginName", "putian")
+	// .addParameter("txtPassword", "putian").build();
+	// CloseableHttpResponse response2 = httpclient.execute(login);
+	// try {
+	// HttpEntity entity = response2.getEntity();
+	// logger.info("Login form get: " + response2.getStatusLine());
+	// EntityUtils.consume(entity);
+	// logger.debug("Post logon cookies:");
+	// List<Cookie> cookies = cookieStore.getCookies();
+	// if (cookies.isEmpty()) {
+	// logger.debug("None");
+	// } else {
+	// for (int i = 0; i < cookies.size(); i++) {
+	// logger.debug("- " + cookies.get(i).toString());
+	// }
+	// }
+	// } finally {
+	// response2.close();
+	// }
+	// HttpGet httpget = new HttpGet("http://" + SyshelpClient.host
+	// + ":8006//Web/DeviceLocation.aspx" + "?id="
+	// + "7B67D3EC054CBAC657C9445F927818F8");
+	// httpget.addHeader("Accept", ACCEPT);
+	// httpget.addHeader("User-Agent", AGENT);
+	//
+	// ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+	//
+	// public String handleResponse(final HttpResponse response)
+	// throws ClientProtocolException, IOException {
+	// int status = response.getStatusLine().getStatusCode();
+	// if (status >= 200 && status < 300) {
+	// HttpEntity entity = response.getEntity();
+	// return entity != null ? EntityUtils.toString(entity)
+	// : null;
+	// } else {
+	// throw new ClientProtocolException(
+	// "Unexpected response status: " + status);
+	// }
+	// }
+	//
+	// };
+	// String resultString = httpclient.execute(httpget, responseHandler);
+	// resultString = StringUtils.substringBetween(resultString,
+	// "Location(", ")");
+	// // try second time
+	// if (!resultString.contains(timeStr)) {
+	// resultString = httpclient.execute(httpget, responseHandler);
+	// resultString = StringUtils.substringBetween(resultString,
+	// "Location(", ")");
+	// }
+	// System.out.println(timeStr + "," + resultString);
+	// // if timestr match
+	// WatchMSG watch = new WatchMSG();
+	// watch.setDatatype(WatchMSG.DATATYPE_GPS);
+	// String[] arrStrings = StringUtils.split(resultString, ",");
+	// String lon = StringUtils.substringBetween(arrStrings[0], "'");
+	// String lat = StringUtils.substringBetween(arrStrings[1], "'");
+	// watch.setMobile(StringUtils.substringBetween(arrStrings[2], "'"));
+	//
+	// //
+	// http://api.map.baidu.com/geoconv/v1/?coords=114.21892734521,29.575429778924;114.21892734521,29.575429778924&from=1&to=5&ak=
+	// MapXY pointMapXY = new MapXY();
+	// pointMapXY.setX(lon);
+	// pointMapXY.setY(lat);
+	//
+	// pointMapXY = transferToBDMap(pointMapXY);
+	// // jingdu
+	// watch.setLongitude(pointMapXY.getX());
+	// // weidu
+	// watch.setLatitude(pointMapXY.getY());
+	// System.out.println(resultString);
+	// CacheUtil.getSyshelpWatchQueue().put(watch);
+	// } finally {
+	// httpclient.close();
+	// }
+	//
+	// }
 
-					.addParameter(
-							"__EVENTVALIDATION",
-							"/wEWBALAtOC8DwKpwK/OBgK1qbSRCwLQw5PyCxQBzqH6uli+cb6wzo/8F6JXFibokbRS/JQu01cmT8nV")
-					.addParameter("postType", "login")
-					.addParameter("txtLoginName", "putian")
-					.addParameter("txtPassword", "putian").build();
-			CloseableHttpResponse response2 = httpclient.execute(login);
-			try {
-				HttpEntity entity = response2.getEntity();
-				logger.info("Login form get: " + response2.getStatusLine());
-				EntityUtils.consume(entity);
-				logger.debug("Post logon cookies:");
-				List<Cookie> cookies = cookieStore.getCookies();
-				if (cookies.isEmpty()) {
-					logger.debug("None");
-				} else {
-					for (int i = 0; i < cookies.size(); i++) {
-						logger.debug("- " + cookies.get(i).toString());
-					}
-				}
-			} finally {
-				response2.close();
-			}
-			HttpGet httpget = new HttpGet("http://" + SyshelpClient.host
-					+ ":8006//Web/DeviceLocation.aspx" + "?id="
-					+ "7B67D3EC054CBAC657C9445F927818F8");
-			httpget.addHeader("Accept", ACCEPT);
-			httpget.addHeader("User-Agent", AGENT);
-
-			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-
-				public String handleResponse(final HttpResponse response)
-						throws ClientProtocolException, IOException {
-					int status = response.getStatusLine().getStatusCode();
-					if (status >= 200 && status < 300) {
-						HttpEntity entity = response.getEntity();
-						return entity != null ? EntityUtils.toString(entity)
-								: null;
-					} else {
-						throw new ClientProtocolException(
-								"Unexpected response status: " + status);
-					}
-				}
-
-			};
-			String resultString = httpclient.execute(httpget, responseHandler);
-			resultString = StringUtils.substringBetween(resultString,
-					"Location(", ")");
-			// try second time
-			if (!resultString.contains(timeStr)) {
-				resultString = httpclient.execute(httpget, responseHandler);
-				resultString = StringUtils.substringBetween(resultString,
-						"Location(", ")");
-			}
-			System.out.println(timeStr + "," + resultString);
-			// if timestr match
-			WatchMSG watch = new WatchMSG();
-			watch.setDatatype(WatchMSG.DATATYPE_GPS);
-			String[] arrStrings = StringUtils.split(resultString, ",");
-			String lon = StringUtils.substringBetween(arrStrings[0], "'");
-			String lat = StringUtils.substringBetween(arrStrings[1], "'");
-			watch.setMobile(StringUtils.substringBetween(arrStrings[2], "'"));
-
-			// http://api.map.baidu.com/geoconv/v1/?coords=114.21892734521,29.575429778924;114.21892734521,29.575429778924&from=1&to=5&ak=
-			MapXY pointMapXY = new MapXY();
-			pointMapXY.setX(lon);
-			pointMapXY.setY(lat);
-
-			pointMapXY = transferToBDMap(pointMapXY);
-			// jingdu
-			watch.setLongitude(pointMapXY.getX());
-			// weidu
-			watch.setLatitude(pointMapXY.getY());
-			System.out.println(resultString);
-			CacheUtil.getSyshelpWatchQueue().put(watch);
-		} finally {
-			httpclient.close();
-		}
-
-	}
-
-	private MapXY transferToBDMap(MapXY pointMapXY) {
-		// http://api.map.baidu.com/geoconv/v1/?coords=114.21892734521,29.575429778924;114.21892734521,29.575429778924&from=1&to=5&ak=30b8356b2e5d2693e2391f3e39aef2ad
-		String apiHostString = "http://api.map.baidu.com/geoconv/v1/?";
-		String coordsString = pointMapXY.getX() + "," + pointMapXY.getY();
-		String urlString = apiHostString + "coords=" + coordsString
-				+ "&from=3&to=5&ak=30b8356b2e5d2693e2391f3e39aef2ad";
-		try {
-			String resultString = Request.Get(urlString).execute()
-					.returnContent().asString();
-			System.out.println(resultString);
-			String xString = StringUtils.substringBetween(resultString, "x\":",
-					",");
-			System.out.println(xString);
-			String yString = StringUtils.substringAfterLast(resultString,
-					"y\":");
-			yString = StringUtils.substringBefore(yString, "}");
-			System.out.println(yString);
-			pointMapXY.setX(xString);
-			pointMapXY.setY(yString);
-
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return pointMapXY;
-	}
+	// private MapXY transferToBDMap(MapXY pointMapXY) {
+	// //
+	// http://api.map.baidu.com/geoconv/v1/?coords=114.21892734521,29.575429778924;114.21892734521,29.575429778924&from=1&to=5&ak=30b8356b2e5d2693e2391f3e39aef2ad
+	// String apiHostString = "http://api.map.baidu.com/geoconv/v1/?";
+	// String coordsString = pointMapXY.getX() + "," + pointMapXY.getY();
+	// String urlString = apiHostString + "coords=" + coordsString
+	// + "&from=3&to=5&ak=30b8356b2e5d2693e2391f3e39aef2ad";
+	// try {
+	// String resultString = Request.Get(urlString).execute()
+	// .returnContent().asString();
+	// System.out.println(resultString);
+	// String xString = StringUtils.substringBetween(resultString, "x\":",
+	// ",");
+	// System.out.println(xString);
+	// String yString = StringUtils.substringAfterLast(resultString,
+	// "y\":");
+	// yString = StringUtils.substringBefore(yString, "}");
+	// System.out.println(yString);
+	// pointMapXY.setX(xString);
+	// pointMapXY.setY(yString);
+	//
+	// } catch (ClientProtocolException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// } catch (IOException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// }
+	// return pointMapXY;
+	// }
 
 	// send watch message to syshelp
-	private void getAndSendSyshelpString() {
-		Executors.newSingleThreadExecutor().execute(new Runnable() {
-			@Override
-			public void run() {
-				while (true) {
-					try {
-						String msgString = CacheUtil.getSyshelpMessageQueue()
-								.take();
-
-						IoSession session = SyshelpClient.getSession();
-						if (session != null) {
-							session.write(msgString);
-						}
-						// match msg time
-
-						// /login syshelp web, and retrive gps message
-						if (msgString.contains("LBS")) {
-							String timeString = StringUtils.substringBetween(
-									msgString, "[", "]");
-							String[] arrStrings = timeString.split(",");
-							// V1.0.0,460026103449054,1,abcd,2015-02-15
-							// 13:55:10,1-2,869816413469526,8,T52,LBS,46000,4566,29990,1424008510
-							timeString = arrStrings[4];
-
-							retriveMessage(timeString);
-						}
-
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-
-			}
-		});
-
-	}
+	// private void getAndSendSyshelpString() {
+	// Executors.newSingleThreadExecutor().execute(new Runnable() {
+	// @Override
+	// public void run() {
+	// while (true) {
+	// try {
+	// String msgString = CacheUtil.getSyshelpMessageQueue()
+	// .take();
+	//
+	// IoSession session = SyshelpClient.getSession();
+	// if (session != null) {
+	// session.write(msgString);
+	// }
+	// // match msg time
+	//
+	// // /login syshelp web, and retrive gps message
+	// if (msgString.contains("LBS")) {
+	// String timeString = StringUtils.substringBetween(
+	// msgString, "[", "]");
+	// String[] arrStrings = timeString.split(",");
+	// // V1.0.0,460026103449054,1,abcd,2015-02-15
+	// // 13:55:10,1-2,869816413469526,8,T52,LBS,46000,4566,29990,1424008510
+	// timeString = arrStrings[4];
+	//
+	// retriveMessage(timeString);
+	// }
+	//
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+	//
+	// }
+	// });
+	//
+	// }
 
 	private void getAndSendSysHelpMSG() {
 		Executors.newSingleThreadExecutor().execute(new Runnable() {

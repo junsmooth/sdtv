@@ -6,6 +6,13 @@ public class MapXY {
 	// weidu ,latitude
 	private String y;
 
+	public MapXY() {
+		// TODO Auto-generated constructor stub
+	}
+	public MapXY(String longitude,String latitude) {
+		this.x=longitude;
+		this.y=latitude;
+	}
 	public String getX() {
 		return x;
 	}

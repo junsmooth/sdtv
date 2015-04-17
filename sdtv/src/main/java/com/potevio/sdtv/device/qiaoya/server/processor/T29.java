@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.potevio.sdtv.device.baidu.BaiduAPI;
 import com.potevio.sdtv.device.minigps.CellTower;
 import com.potevio.sdtv.device.minigps.MiniGPS;
 import com.potevio.sdtv.device.minigps.MiniGPSRequest;
@@ -83,9 +84,9 @@ public class T29 extends AbstractRequestMsg {
 						lbs.setMnc(mnc);
 						String[] lbsArr = StringUtils.split(bodyArr[i], "|");
 
-						String lac = Integer.parseInt(lbsArr[0],16)+"";
+						String lac = Integer.parseInt(lbsArr[0], 16) + "";
 
-						String cell = Integer.parseInt(lbsArr[1],16)+"";
+						String cell = Integer.parseInt(lbsArr[1], 16) + "";
 
 						String power = lbsArr[2];
 
@@ -114,8 +115,8 @@ public class T29 extends AbstractRequestMsg {
 				lbs.setMnc(arr[1]);
 				String bodyStr = StringUtils.substringAfter(lbsString, "|");
 				String[] bodyArr = StringUtils.split(bodyStr, "|");
-				lbs.setLac(Integer.parseInt(bodyArr[0],16)+"");
-				lbs.setCell(Integer.parseInt(bodyArr[1],16)+"");
+				lbs.setLac(Integer.parseInt(bodyArr[0], 16) + "");
+				lbs.setCell(Integer.parseInt(bodyArr[1], 16) + "");
 				lbs.setWatch(watch);
 				watch.addLbs(lbs);
 			}
@@ -126,6 +127,10 @@ public class T29 extends AbstractRequestMsg {
 			if (!"0".equals(longitude) && !"0".equals(latitude)) {
 				logger.info("QE -> GPS DATA ,lon:" + longitude + ",lat:"
 						+ latitude);
+				MapXY mapXY = new MapXY(longitude, latitude);
+				BaiduAPI.transferToBDMap(mapXY);
+				watch.setLongitude(mapXY.getX());
+				watch.setLatitude(mapXY.getY());
 
 			} else {
 				// else parse lbs
@@ -139,7 +144,7 @@ public class T29 extends AbstractRequestMsg {
 					req.addCellTower(ct);
 					try {
 						MiniGPSResult rst = MiniGPS.getGPS(req);
-						if(rst!=null){
+						if (rst != null) {
 							logger.info("MiniGPS Location:" + rst.getLocation());
 							double lat = rst.getLocation().getLatitude();
 							rst.getLocation().getAddress().getStreet();
@@ -152,10 +157,10 @@ public class T29 extends AbstractRequestMsg {
 									.getStreet());
 							watch.setLatitude(pointMapXY.getY());
 							watch.setLongitude(pointMapXY.getX());
-						}else{
+						} else {
 							logger.error("LBS Parse Failed.");
 						}
-						
+
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
