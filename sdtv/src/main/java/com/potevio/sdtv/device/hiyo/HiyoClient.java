@@ -4,11 +4,9 @@ import java.net.InetSocketAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.mina.core.RuntimeIoException;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.core.filterchain.IoFilterAdapter;
 import org.apache.mina.core.future.ConnectFuture;
@@ -31,13 +29,6 @@ public class HiyoClient {
 	private static String host = "api.hi-yo.com";
 	private static int port = 21235;
 
-	// public static ConnectFuture connect() {
-	// cf = connector
-	// .connect(new InetSocketAddress("api.hi-yo.com", bindPort));
-	//
-	// cf.awaitUninterruptibly();
-	// return cf;
-	// }
 
 	@PostConstruct
 	public void start() {
@@ -54,35 +45,6 @@ public class HiyoClient {
 		// checkSession();
 	}
 
-	// private void checkSession() {
-	// Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(
-	// new Runnable() {
-	// @Override
-	// public void run() {
-	//
-	// try {
-	// if (cf == null) {
-	// logger.info("CHECK HIYO SESSION. cf=" + cf);
-	// cf = connect();
-	// } else {
-	// if (!cf.isConnected()
-	// || !cf.getSession().isConnected()) {
-	// logger.info("RECONNECT HIYOSERVER");
-	// cf.cancel();
-	// cf = connect();
-	// }
-	// }
-	// logger.info("CHECK HIYO SESSION. cf=" + cf
-	// + ",cf.isConnected=" + cf.isConnected()
-	// + ",cf.getSession=" + cf.getSession()
-	// + ",cf.getsession.isconnected="
-	// + cf.getSession().isConnected());
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// }
-	// }, 1, 60, TimeUnit.SECONDS);
-	// }
 
 	private void initConnector() {
 		DefaultIoFilterChainBuilder chain = connector.getFilterChain();
@@ -93,32 +55,20 @@ public class HiyoClient {
 				logger.info("INTO Session Closed Filter.");
 				for (;;) {
 					try {
-
-						Thread.sleep(3000);
-						logger.info("Connecting to " + host);
+						logger.info("RE-Connect Sleep 30 Seconds");
+						Thread.sleep(30000);
+						logger.info("RE-Connecting to " + host);
 						ConnectFuture future = connector.connect();
 						future.awaitUninterruptibly();//
 						session = future.getSession();//
 						if (session.isConnected()) {
-							logger.info("["
-									+ connector.getDefaultRemoteAddress()
-											.getHostName()
-									+ ":"
-									+ connector.getDefaultRemoteAddress()
-											.getPort() + "]");
+							logger.info("RE-Connect to "+host+" success.");
 							break;
 						} else {
-							logger.info("Connecion failed.");
+							logger.info("RE-Connection failed.");
 						}
 					} catch (Exception ex) {
-						logger.info(""
-								+ host
-								+ ":"
-								+ port
-								+ "[]"
-								+ ",,:"
-								+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-										.format(new Date()));
+						logger.info("Re-Connect Exception");
 					}
 				}
 			}
@@ -140,26 +90,10 @@ public class HiyoClient {
 				ConnectFuture future = connector.connect();
 				future.awaitUninterruptibly(); //
 				session = future.getSession(); //
-				logger.info(""
-						+ host
-						+ ":"
-						+ port
-						+ "[]"
-						+ ",,:"
-						+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-								.format(new Date()));
+				logger.info("Connect Success."+session);
 				break;
 			} catch (Exception e) {
-				logger.error(
-						""
-								+ host
-								+ ":"
-								+ port
-								+ ""
-								+ ",,:"
-								+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-										.format(new Date())
-								+ ", MSG,MSGIP,MSG,:" + e.getMessage(), e);
+				logger.error("Connect Exception."+e.getMessage());
 				try {
 					Thread.sleep(30000);
 				} catch (InterruptedException e1) {
