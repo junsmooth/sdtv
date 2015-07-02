@@ -46,7 +46,7 @@ public class QEMsgHandler extends IoHandlerAdapter {
 	public void messageReceived(IoSession session, Object message)
 			throws Exception {
 		String msg = message.toString();
-
+		logger.info("QE-> "  + msg);
 		String str = msg.replace('[', ' ').replace(']', ' ').trim();
 		String[] arr = str.split(",");
 		QEClientMsg qeMsg = new QEClientMsg();
