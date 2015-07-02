@@ -25,6 +25,16 @@ public class BedMsgHandler extends IoHandlerAdapter {
 	private BedDataService service;
 	
 	@Override
+	public void sessionOpened(IoSession session) throws Exception {
+		logger.info("sessionOpened" + session);
+	}
+	
+	
+	@Override
+	public void sessionClosed(IoSession session) throws Exception {
+		logger.info("sessionClosed" + session);
+	}
+	@Override
 	public void messageReceived(IoSession session, Object message)
 			throws Exception {
 		BedMSG msg = (BedMSG) message;
