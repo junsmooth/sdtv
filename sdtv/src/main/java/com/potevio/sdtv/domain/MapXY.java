@@ -1,4 +1,4 @@
-package com.potevio.sdtv.service;
+package com.potevio.sdtv.domain;
 
 public class MapXY {
 	// Jingdu, longitude

@@ -6,7 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Request;
 
-import com.potevio.sdtv.service.MapXY;
+import com.potevio.sdtv.domain.MapXY;
 
 public class BaiduAPI {
 

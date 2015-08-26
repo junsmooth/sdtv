@@ -1,4 +1,4 @@
-package com.potevio.sdtv.service;
+package com.potevio.sdtv.biz;
 
 import java.io.IOException;
 

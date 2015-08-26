@@ -1,4 +1,4 @@
-package com.potevio.sdtv.service;
+package com.potevio.sdtv.biz;
 
 import java.io.IOException;
 import java.net.URI;
@@ -36,8 +36,10 @@ import com.potevio.sdtv.device.minigps.MiniGPSResult;
 import com.potevio.sdtv.device.syshelp.WatchMSG;
 import com.potevio.sdtv.device.syshelp.S8.SyshelpClient;
 import com.potevio.sdtv.domain.LBS;
+import com.potevio.sdtv.domain.MapXY;
 import com.potevio.sdtv.domain.PlatformProperties;
 import com.potevio.sdtv.domain.Watch;
+import com.potevio.sdtv.service.WatchService;
 import com.potevio.sdtv.util.CacheUtil;
 
 @Component

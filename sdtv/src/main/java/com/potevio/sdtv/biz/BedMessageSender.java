@@ -1,4 +1,4 @@
-package com.potevio.sdtv.service;
+package com.potevio.sdtv.biz;
 
 import java.io.IOException;
 import java.util.Map;
@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSON;
 import com.potevio.sdtv.device.hiyo.HiyoMSG;
 import com.potevio.sdtv.domain.BedData;
 import com.potevio.sdtv.domain.PlatformProperties;
+import com.potevio.sdtv.service.BedDbService;
 import com.potevio.sdtv.util.CacheUtil;
 
 @Component
