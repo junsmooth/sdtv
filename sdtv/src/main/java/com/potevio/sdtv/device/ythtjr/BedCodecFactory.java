@@ -1,5 +1,7 @@
 package com.potevio.sdtv.device.ythtjr;
 
+import java.util.Date;
+
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.CumulativeProtocolDecoder;
@@ -97,6 +99,7 @@ public class BedCodecFactory implements ProtocolCodecFactory {
 				rasping += (char) Integer.parseInt(rasping1, 16);
 				rasping += (char) Integer.parseInt(rasping2, 16);
 				msg.setResping(rasping);
+				msg.setOccurTime(new Date());
 				out.write(msg);
 				return true;
 			}

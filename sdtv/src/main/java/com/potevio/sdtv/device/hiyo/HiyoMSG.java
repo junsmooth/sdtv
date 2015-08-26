@@ -1,6 +1,7 @@
 package com.potevio.sdtv.device.hiyo;
 
 import java.util.Arrays;
+import java.util.Date;
 
 public class HiyoMSG {
 	
@@ -12,6 +13,17 @@ public class HiyoMSG {
 	private byte[] cfalg=new byte[2];
 	private byte[] reserved=new byte[2];
 	
+	private Date dataTime;
+	public Date getDataTime() {
+		return dataTime;
+	}
+
+
+	public void setDataTime(Date dataTime) {
+		this.dataTime = dataTime;
+	}
+
+
 	public HiyoMSG() {
 		ver[0]=0x1;
 		ver[1]=0x0;

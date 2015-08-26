@@ -1,7 +1,7 @@
 package com.potevio.sdtv.device.hiyo;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
+import java.util.Date;
 
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
@@ -54,6 +54,7 @@ public class HiyoCodecFactory implements ProtocolCodecFactory {
 					return false;
 				} else {
 					hiyoMSG = readHeadAndNeck(in);
+					hiyoMSG.setDataTime(new Date());
 					logger.debug("PARSE NECK:" + hiyoMSG.toString());
 					short leftLen = (short) (hiyoMSG.getLen() - 6);
 					session.setAttribute(DECODER_STATE_KEY, hiyoMSG);

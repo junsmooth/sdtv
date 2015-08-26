@@ -129,10 +129,9 @@ public class BedMessageSender {
 			logger.info("OUT BED:" + contentUrl);
 			String result = Request.Get(contentUrl).execute().returnContent()
 					.asString();
-		} catch (ClientProtocolException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("OUT BED ERR:"+e.getMessage());
 		}
 
 	}
