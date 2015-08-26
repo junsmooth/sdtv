@@ -1,7 +1,6 @@
 package com.potevio.sdtv.service;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
@@ -16,8 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.potevio.sdtv.device.hiyo.HiyoMSG;
-import com.potevio.sdtv.device.ythtjr.BedMSG;
-import com.potevio.sdtv.domain.Bed;
+import com.potevio.sdtv.domain.BedData;
 import com.potevio.sdtv.domain.PlatformProperties;
 import com.potevio.sdtv.util.CacheUtil;
 
@@ -59,8 +57,9 @@ public class BedMessageSender {
 						if (1 == z) {
 
 							String alt = jsonMap.get("alt").toString();
-							BedMSG bedMsg = new BedMSG();
-							bedMsg.setDeviceid(jsonMap.get("dev").toString());
+//							BedMSG bedMsg = new BedMSG();
+							BedData bedMsg=new BedData();
+							bedMsg.setSeriesId(jsonMap.get("dev").toString());
 
 							if ("6".equals(alt) || "7".equals(alt)) {
 								// 离床
@@ -82,13 +81,13 @@ public class BedMessageSender {
 								bedMsg.setStatus("20");
 							}
 
-							Bed bed = new Bed();
-							bed.setSeriesId(bedMsg.getDeviceid());
-							bed.setOccurTime(new Date());
-							bed.setResping(bedMsg.getResping());
-							bed.setHeartrating(bedMsg.getHeartrating());
-							bed.setStatus(bedMsg.getStatus());
-							bedService.insert(bed);
+//							Bed bed = new Bed();
+//							bed.setSeriesId(bedMsg.getDeviceid());
+//							bed.setOccurTime(new Date());
+//							bed.setResping(bedMsg.getResping());
+//							bed.setHeartrating(bedMsg.getHeartrating());
+//							bed.setStatus(bedMsg.getStatus());
+							bedService.insert(bedMsg);
 							sendBedMsg(bedMsg);
 						}
 
@@ -108,7 +107,7 @@ public class BedMessageSender {
 			public void run() {
 				while (true) {
 					try {
-						BedMSG msg = (BedMSG) CacheUtil.getYthtjrbedQueue()
+						BedData msg = (BedData) CacheUtil.getYthtjrbedQueue()
 								.take();
 						sendBedMsg(msg);
 					} catch (Exception e) {
@@ -120,9 +119,9 @@ public class BedMessageSender {
 		});
 	}
 
-	public void sendBedMsg(BedMSG msg) {
+	public void sendBedMsg(BedData msg) {
 		String url = prop.getBaseurl() + "/" + prop.getBedaction();
-		String parm = "?" + "deviceid=" + msg.getDeviceid() + "&heartrating="
+		String parm = "?" + "deviceid=" + msg.getSeriesId() + "&heartrating="
 				+ msg.getHeartrating() + "&resping=" + msg.getResping()
 				+ "&status=" + msg.getStatus();
 		String contentUrl = url + parm;

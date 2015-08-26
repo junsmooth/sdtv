@@ -1,9 +1,12 @@
 package com.potevio.sdtv.dao;
 
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.data.repository.CrudRepository;
 
-import com.potevio.sdtv.domain.Bed;
+import com.potevio.sdtv.domain.BedData;
 
-public interface BedDao extends CrudRepository<Bed, Integer> {
-
+public interface BedDao extends CrudRepository<BedData, Integer> {
+	List<BedData> findByOccurTimeGreaterThan(Date date);
 }

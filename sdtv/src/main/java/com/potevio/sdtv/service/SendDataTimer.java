@@ -13,15 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
-import com.potevio.sdtv.device.hiyo.HiyoClient;
 import com.potevio.sdtv.device.hiyo.HiyoMSG;
 import com.potevio.sdtv.device.syshelp.WatchMSG;
-import com.potevio.sdtv.device.syshelp.S8.SysHelpWatchServer;
-import com.potevio.sdtv.device.ythtjr.BedMSG;
-import com.potevio.sdtv.device.ythtjr.BedServer;
+import com.potevio.sdtv.domain.BedData;
 import com.potevio.sdtv.domain.PlatformProperties;
 import com.potevio.sdtv.util.CacheUtil;
 
@@ -79,8 +75,8 @@ public class SendDataTimer {
 						if (1 == z) {
 
 							String alt = jsonMap.get("alt").toString();
-							BedMSG bedMsg = new BedMSG();
-							bedMsg.setDeviceid(jsonMap.get("dev").toString());
+							BedData bedMsg = new BedData();
+							bedMsg.setSeriesId(jsonMap.get("dev").toString());
 
 							if ("6".equals(alt) || "7".equals(alt)) {
 								// 离床
@@ -163,9 +159,9 @@ public class SendDataTimer {
 			@Override
 			public void run() {
 				while (true) {
-					BedMSG msg;
+					BedData msg;
 					try {
-						msg = (BedMSG) CacheUtil.getYthtjrbedQueue().take();
+						msg = (BedData) CacheUtil.getYthtjrbedQueue().take();
 						sendBedMsg(msg);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -204,9 +200,9 @@ public class SendDataTimer {
 
 	}
 
-	private void sendBedMsg(BedMSG msg) {
+	private void sendBedMsg(BedData msg) {
 		String url = prop.getBaseurl() + "/" + prop.getBedaction();
-		String parm = "?" + "deviceid=" + msg.getDeviceid() + "&heartrating="
+		String parm = "?" + "deviceid=" + msg.getSeriesId() + "&heartrating="
 				+ msg.getHeartrating() + "&resping=" + msg.getResping()
 				+ "&status=" + msg.getStatus();
 		String contentUrl = url + parm;

@@ -8,9 +8,8 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
-import com.potevio.sdtv.device.ythtjr.BedService;
-import com.potevio.sdtv.device.ythtjr.android.BedData;
 import com.potevio.sdtv.device.ythtjr.android.socket.AndroidMSG;
+import com.potevio.sdtv.domain.BedData;
 import com.potevio.sdtv.util.CacheUtil;
 
 @Service("android_heart_breath_list")
@@ -41,9 +40,9 @@ public class HEART_BREATHE_LIST implements IAndroidMessageProcessor {
 			List resultList = new ArrayList();
 			// int len = bedDataList.size();
 			for (BedData data : dataList) {
-				int h = data.getHeartrate();
-				int r = data.getResp();
-				long t = data.getDataTime().getTime();
+				int h = Integer.parseInt(data.getHeartrating());
+				int r = Integer.parseInt(data.getResping());
+				long t = data.getOccurTime().getTime();
 				Map v = new HashMap();
 				v.put("heart", h);
 				v.put("breath", r);

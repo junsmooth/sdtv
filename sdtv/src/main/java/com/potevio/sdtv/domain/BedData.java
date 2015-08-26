@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "t_bed")
-public class Bed {
+public class BedData {
 	@Id
 	@GeneratedValue
 	private int id;
@@ -34,6 +34,15 @@ public class Bed {
 	@Column(name = "DATA_DATE")
 	private Date occurTime;
 	private String status;
+	private String statusName;
+	public String getStatusName() {
+		return statusName;
+	}
+
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
+
 	private String heartrating;
 	private String resping;
 	@Transient

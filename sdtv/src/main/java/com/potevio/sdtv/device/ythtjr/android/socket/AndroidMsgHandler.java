@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.potevio.sdtv.App;
-import com.potevio.sdtv.device.ythtjr.android.BedData;
 import com.potevio.sdtv.device.ythtjr.android.processor.IAndroidMessageProcessor;
+import com.potevio.sdtv.domain.BedData;
 import com.potevio.sdtv.util.CacheUtil;
 
 @Component

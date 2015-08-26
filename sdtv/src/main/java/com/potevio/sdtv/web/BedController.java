@@ -7,9 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.potevio.sdtv.device.ythtjr.BedMSG;
 import com.potevio.sdtv.device.ythtjr.BedService;
-import com.potevio.sdtv.domain.Bed;
+import com.potevio.sdtv.domain.BedData;
 import com.potevio.sdtv.util.CacheUtil;
 
 @Controller
@@ -23,16 +22,12 @@ public class BedController {
 	public @ResponseBody Object latestBedData() {
 //		Bed bed = bedService.latestBedData();
 		
-		BedMSG msg = CacheUtil.getBedlatest();
+		BedData msg = CacheUtil.getBedlatest();
 		if(msg==null){
 			return "";
 		}
-		Bed b = new Bed();
-		b.setHeartrating(msg.getHeartrating());
-		b.setResping(msg.getResping());
-		b.setStatus(msg.getStatus());
-		b.setWarn(0);
-		return b;
+		msg.setWarn(0);
+		return msg;
 //
 //		if (bed != null) {
 //			int heart = bed.getHeartrating();

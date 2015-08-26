@@ -10,6 +10,7 @@ import org.apache.mina.filter.codec.ProtocolEncoder;
 import org.apache.mina.filter.codec.ProtocolEncoderAdapter;
 import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 
+import com.potevio.sdtv.domain.BedData;
 import com.potevio.sdtv.util.SocketUtil;
 
 public class BedCodecFactory implements ProtocolCodecFactory {
@@ -69,8 +70,10 @@ public class BedCodecFactory implements ProtocolCodecFactory {
 				bedID += (char) Integer.parseInt(b5, 16);
 				bedID += (char) Integer.parseInt(b6, 16);
 
-				BedMSG msg = new BedMSG();
-				msg.setDeviceid(bedID);
+//				BedMSG msg = new BedMSG();
+				BedData msg=new BedData();
+//				msg.setDeviceid(bedID);
+				msg.setSeriesId(bedID);
 
 				String status = str.substring(14, 16);
 				msg.setStatus(status);

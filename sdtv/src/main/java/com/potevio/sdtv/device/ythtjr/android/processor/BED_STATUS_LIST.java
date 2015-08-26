@@ -12,9 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
-import com.potevio.sdtv.device.ythtjr.android.BedData;
 import com.potevio.sdtv.device.ythtjr.android.socket.AndroidMSG;
-import com.potevio.sdtv.device.ythtjr.android.socket.AndroidMsgHandler;
+import com.potevio.sdtv.domain.BedData;
 import com.potevio.sdtv.service.BedDataService;
 
 @Service("android_bed_status_list")
@@ -39,14 +38,14 @@ public class BED_STATUS_LIST implements IAndroidMessageProcessor {
 			List timeMapList = new ArrayList();
 			Map timeMap = null;
 			for (BedData bedData : bedDataList) {
-				String statusCode = bedData.getStatusCode();
+				String statusCode = bedData.getStatus();
 				if (!"50".equals(statusCode) && !"D0".equals(statusCode)) {
 					if (timeMap == null) {
 						timeMap = new HashMap();
-						timeMap.put("startTime", bedData.getDataTime()
+						timeMap.put("startTime", bedData.getOccurTime()
 								.getTime());
 					}
-					timeMap.put("endTime", bedData.getDataTime().getTime());
+					timeMap.put("endTime", bedData.getOccurTime().getTime());
 				} else {
 					if (timeMap != null) {
 						timeMapList.add(timeMap);

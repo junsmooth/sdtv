@@ -7,14 +7,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.potevio.sdtv.device.hiyo.HiyoMSG;
 import com.potevio.sdtv.device.syshelp.WatchMSG;
-import com.potevio.sdtv.device.ythtjr.BedMSG;
-import com.potevio.sdtv.device.ythtjr.android.BedData;
+import com.potevio.sdtv.domain.BedData;
 import com.potevio.sdtv.domain.Watch;
 
 public class CacheUtil {
 
 	private static LinkedBlockingQueue<BedData> androidBedQueue = new LinkedBlockingQueue<BedData>();
-	private static LinkedBlockingQueue<BedMSG> ythtjrbedQueue = new LinkedBlockingQueue<BedMSG>();
+	private static LinkedBlockingQueue<BedData> ythtjrbedQueue = new LinkedBlockingQueue<BedData>();
 	private static LinkedBlockingQueue<WatchMSG> syshelpWatchQueue = new LinkedBlockingQueue<WatchMSG>();
 
 	private static Map<String, List<BedData>> bedCacheMap = new HashMap<String, List<BedData>>();
@@ -58,7 +57,7 @@ public class CacheUtil {
 		return hiyoQueue;
 	}
 
-	private static BedMSG bedlatest = null;
+	private static BedData bedlatest = null;
 
 	private static WatchMSG watchLatest = null;
 
@@ -70,11 +69,11 @@ public class CacheUtil {
 		CacheUtil.watchLatest = watchLatest;
 	}
 
-	public static BedMSG getBedlatest() {
+	public static BedData getBedlatest() {
 		return bedlatest;
 	}
 
-	public static void setBedlatest(BedMSG bedlatest) {
+	public static void setBedlatest(BedData bedlatest) {
 		CacheUtil.bedlatest = bedlatest;
 	}
 
@@ -82,7 +81,7 @@ public class CacheUtil {
 		return syshelpWatchQueue;
 	}
 
-	public static LinkedBlockingQueue<BedMSG> getYthtjrbedQueue() {
+	public static LinkedBlockingQueue<BedData> getYthtjrbedQueue() {
 		return ythtjrbedQueue;
 	}
 

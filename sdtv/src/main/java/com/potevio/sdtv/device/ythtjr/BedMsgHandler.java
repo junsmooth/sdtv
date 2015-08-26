@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.potevio.sdtv.device.ythtjr.android.BedData;
 import com.potevio.sdtv.device.ythtjr.android.BedStatus;
+import com.potevio.sdtv.domain.BedData;
 import com.potevio.sdtv.service.BedDataService;
 import com.potevio.sdtv.util.CacheUtil;
 
@@ -37,27 +37,33 @@ public class BedMsgHandler extends IoHandlerAdapter {
 	@Override
 	public void messageReceived(IoSession session, Object message)
 			throws Exception {
-		BedMSG msg = (BedMSG) message;
+//		BedMSG msg = (BedMSG) message;
+		BedData msg=(BedData) message;
 		logger.info("BED RAW:" + msg);
-		if (!msg.getDeviceid().equals("Z20023")) {
-			CacheUtil.setBedlatest(msg);
-		}
+//		if (!msg.getDeviceid().equals("Z20023")) {
+//			CacheUtil.setBedlatest(msg);
+//		}
 		// else{
 		// CacheUtil.setBedlatest(msg);
 		// }
 		CacheUtil.getYthtjrbedQueue().put(msg);
 
-		if ("Z20245".equals(msg.getDeviceid())) {
+		if ("Z20245".equals(msg.getSeriesId())) {
 			try {
-				BedData bd = new BedData();
-				bd.setBedSeriesId(msg.getDeviceid());
-				bd.setDataTime(new Date());
-				bd.setHeartrate(Integer.parseInt(msg.getHeartrating()));
-				bd.setResp(Integer.parseInt(msg.getResping()));
-				bd.setStatus(BedStatus.getNameByCode(msg.getStatus()));
-				bd.setStatusCode(msg.getStatus());
+//				BedData bd = new BedData();
+				BedData bd=new BedData();
+				bd.setSeriesId(msg.getSeriesId());
+//				bd.setBedSeriesId(msg.getSeriesId());
+				bd.setOccurTime(new Date());
+//				bd.setDataTime(new Date());
+				bd.setHeartrating(msg.getHeartrating());
+//				bd.setHeartrate(Integer.parseInt(msg.getHeartrating()));
+				bd.setResping(msg.getResping());
+//				bd.setResp(Integer.parseInt(msg.getResping()));
+				bd.setStatus(msg.getStatus());
+				bd.setStatusName(BedStatus.getNameByCode(msg.getStatus()));
 				CacheUtil.getAndroidBedQueue().put(bd);
-				service.insert(bd);
+//				service.insert(bd);
 				saveCache(bd);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -69,11 +75,11 @@ public class BedMsgHandler extends IoHandlerAdapter {
 
 	private void saveCache(BedData bd) {
 		Map<String, List<BedData>> dataCache = CacheUtil.getBedCacheMap();
-		List cachList = dataCache.get(bd.getBedSeriesId());
+		List cachList = dataCache.get(bd.getSeriesId());
 		if (cachList == null) {
 			cachList = new ArrayList();
 		}
-		dataCache.put(bd.getBedSeriesId(), cachList);
+		dataCache.put(bd.getSeriesId(), cachList);
 		cachList.add(bd);
 		// \u7f13\u5b58\u5bb9\u91cf\u8fbe\u5230\u4e8c\u500d\u5bb9\u91cf\u540e\u5bb9\u91cf\u51cf\u534a
 		if (cachList.size() > 1200 * 2) {

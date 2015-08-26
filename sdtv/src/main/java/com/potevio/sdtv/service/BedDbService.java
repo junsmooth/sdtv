@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.potevio.sdtv.dao.BedDao;
-import com.potevio.sdtv.domain.Bed;
+import com.potevio.sdtv.domain.BedData;
 
 @Service
 @Transactional
@@ -13,7 +13,7 @@ public class BedDbService {
 	@Autowired
 	private BedDao dao;
 
-	public void insert(Bed bed) {
+	public void insert(BedData bed) {
 		dao.save(bed);
 	}
 }
