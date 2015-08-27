@@ -31,7 +31,7 @@ public class BedMessageSender {
 	@PostConstruct
 	public void send() {
 		getAndSendHTJRBedMSG();
-		// getAndSendHiyoBedMSG();
+		 getAndSendHiyoBedMSG();
 
 	}
 
