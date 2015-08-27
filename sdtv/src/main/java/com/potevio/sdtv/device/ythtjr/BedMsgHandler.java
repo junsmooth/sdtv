@@ -39,6 +39,7 @@ public class BedMsgHandler extends IoHandlerAdapter {
 			throws Exception {
 //		BedMSG msg = (BedMSG) message;
 		BedData msg=(BedData) message;
+		service.insertRawData(msg);
 		logger.info("BED RAW:" + msg);
 //		if (!msg.getDeviceid().equals("Z20023")) {
 //			CacheUtil.setBedlatest(msg);

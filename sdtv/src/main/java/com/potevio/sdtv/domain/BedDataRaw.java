@@ -14,8 +14,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
-@Table(name = "t_beddata")
-public class BedData {
+@Table(name = "t_beddata_raw")
+public class BedDataRaw {
 	@Id
 	@GeneratedValue
 	private int id;
