@@ -27,7 +27,7 @@ public class BedDataProcessor {
 	// Num of window 1 min =20 , 3 min =60
 
 	// 61 , data index=30, pre:30(ind:0-29), after:30(ind:31-60)
-	private final static int NOISE_WINDOW = 11;
+	private final static int NOISE_WINDOW = 21;
 	private final static int HALF_WINDOW = (NOISE_WINDOW - 1) / 2;
 
 	private final static float RATIO = 0.9f;
@@ -113,8 +113,7 @@ public class BedDataProcessor {
 						data = process50(data);
 						List q = getOrInitList(data);
 						q.add(data);
-						logger.info("DATASIZE:"+q.size());
-						if (q.size() > NOISE_WINDOW) {
+						if (q.size() >= NOISE_WINDOW) {
 							pool.submit(new DataProcessor(q));
 						}
 
