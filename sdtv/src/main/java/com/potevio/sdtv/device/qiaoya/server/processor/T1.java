@@ -19,8 +19,9 @@ public class T1 extends AbstractRequestMsg {
 
 	@Override
 	public void process(QEClientMsg msg) {
-		String imsi = msg.getParamsList().get(0);
-		String softVer = msg.getParamsList().get(1);
+		//new api did not send imsi and softVer
+		//String imsi = msg.getParamsList().get(0);
+		//String softVer = msg.getParamsList().get(1);
 		// [V1.0.0, a1d83kdeio3fg33k,1,abcd,2011-12-15 10:00:00,
 		// 355372020827303,S1,1,2013-1-1 10:10:10,]
 		QEBaseMsg returnMsg = new QEBaseMsg();

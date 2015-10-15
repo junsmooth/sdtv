@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.potevio.sdtv.device.qiaoya.ResultCode;
 import com.potevio.sdtv.device.qiaoya.server.processor.T10;
+import com.potevio.sdtv.device.qiaoya.server.processor.T12;
 import com.potevio.sdtv.device.qiaoya.server.processor.T13;
 import com.potevio.sdtv.device.qiaoya.server.processor.T15;
 import com.potevio.sdtv.device.qiaoya.server.processor.T17;
@@ -417,5 +418,36 @@ public class QEMsgHandler extends IoHandlerAdapter {
 			return new ResultCode(false, imei + " Not Online");
 		}
 
+	}
+
+	public static ResultCode sendS12Message(String imei) {
+		IoSession session = getSessionByImei(imei);
+		if (session != null) {
+			QEBaseMsg baseMsg = Util.createBaseMsg(session, "S12", imei);
+			session.write(baseMsg.toString());
+			// wait
+			long start = System.currentTimeMillis();
+			while (System.currentTimeMillis() - start < TIME_OUT) {
+				QEClientMsg msg = T12.getAndRemoveMsg(createReturnKey(imei,
+						baseMsg));
+				if (msg != null) {
+					return ResultCode.getSuccessMsg();
+				} else {
+					try {
+						Thread.sleep(500);
+						continue;
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+				}
+			}
+			return new ResultCode(false, imei + " Not Respond");
+			// time out
+		} else {
+			return new ResultCode(false, imei + " Not online");
+		}
+
+	
 	}
 }

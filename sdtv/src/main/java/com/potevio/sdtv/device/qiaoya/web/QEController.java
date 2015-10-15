@@ -247,4 +247,12 @@ public class QEController {
 
 		return QEMsgHandler.sendS13Message(imei);
 	}
+	
+	@RequestMapping(value = "{imei}/S12")
+	public @ResponseBody ResultCode S12(@PathVariable String imei,
+			HttpServletRequest req) {
+		logger.info(req.getRequestURL().toString());
+
+		return QEMsgHandler.sendS12Message(imei);
+	}
 }
