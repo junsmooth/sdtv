@@ -1,5 +1,8 @@
 package com.potevio.sdtv.domain;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -10,9 +13,11 @@ public class PlatformProperties {
 	private String baseurl;
 	private String bedaction;
 	private String watchaction;
-	public String getBaseurl() {
-		return baseurl;
-	}
+//	public String getBaseurl() {
+//		return baseurl;
+//	}
+	
+	
 	public void setBaseurl(String baseurl) {
 		this.baseurl = baseurl;
 	}
@@ -27,6 +32,9 @@ public class PlatformProperties {
 	}
 	public void setWatchaction(String watchaction) {
 		this.watchaction = watchaction;
+	}
+	public String[] getBaseUrls() {
+		return StringUtils.split(baseurl, ",");
 	}
 
 }

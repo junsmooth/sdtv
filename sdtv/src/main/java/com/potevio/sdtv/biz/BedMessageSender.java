@@ -1,5 +1,6 @@
 package com.potevio.sdtv.biz;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
@@ -123,19 +124,25 @@ public class BedMessageSender {
 	}
 
 	public void sendBedMsg(BedData msg) {
-		String url = prop.getBaseurl() + "/" + prop.getBedaction();
+	
 		String parm = "?" + "deviceid=" + msg.getSeriesId() + "&heartrating="
 				+ msg.getHeartrating() + "&resping=" + msg.getResping()
 				+ "&status=" + msg.getStatus()+"&dataTime="+msg.getOccurTime().getTime();
-		String contentUrl = url + parm;
-		try {
-			logger.info("OUT BED:" + contentUrl);
-			String result = Request.Get(contentUrl).execute().returnContent()
-					.asString();
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("OUT BED ERR:" + e.getMessage());
+		
+		String[] baseUrls=prop.getBaseUrls();
+		for(String baseUrl:baseUrls){
+			String contentUrl=baseUrl+ "/" + prop.getBedaction()+parm;
+			try {
+				logger.info("OUT BED:" + contentUrl);
+				String result = Request.Get(contentUrl).execute().returnContent()
+						.asString();
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error("OUT BED ERR:" + e.getMessage());
+			}
 		}
+		
+		
 
 	}
 }

@@ -276,7 +276,7 @@ public class WatchMessageSender {
 				|| typeString.equals(Watch.DT_LBS)) {
 			typeString = WatchMSG.DATATYPE_GPS;
 		}
-		String url = prop.getBaseurl() + "/" + prop.getWatchaction();
+
 		String parm = "?" + "mobile=" + watch.getImeiString() + "&datatype="
 				+ typeString;
 		if ("pulse".equals(typeString)) {
@@ -311,15 +311,19 @@ public class WatchMessageSender {
 					+ "&speed=" + watch.getSpeed() + "&timen="
 					+ watch.getDataTime().getTime() + "&LBS=" + lbsString;
 		}
-		String contentUrl = url + parm;
-		try {
-			logger.info("OUT WATCH:" + contentUrl);
-			String result = Request.Get(contentUrl).execute().returnContent()
-					.asString();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+
+		String[] baseUrls = prop.getBaseUrls();
+		for (String baseUrl : baseUrls) {
+			String contentUrl = baseUrl + "/" + prop.getWatchaction() + parm;
+			try {
+				logger.info("OUT WATCH:" + contentUrl);
+				String result = Request.Get(contentUrl).execute()
+						.returnContent().asString();
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error("OUT WATCH ERR:" + e.getMessage());
+			}
+
 		}
 
 	}
