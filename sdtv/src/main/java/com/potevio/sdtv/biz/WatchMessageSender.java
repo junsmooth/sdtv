@@ -290,7 +290,7 @@ public class WatchMessageSender {
 			 * 
 			 * 
 			 */
-			if (watch.getLbsList().size() > 0) {
+			if (watch!=null&&watch.getLbsList()!=null) {
 				StringBuffer sBuffer = new StringBuffer();
 				sBuffer.append(watch.getLbsList().size()).append(";");
 				LBS common = watch.getLbsList().get(0);
